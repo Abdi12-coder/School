@@ -3,246 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite School Management System | Version 2.0</title>
-    
+    <title>Elite School ERP | Professional Version</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"></script>
-
     <style>
-        :root { --primary: #1e40af; --secondary: #64748b; }
-        .sidebar-item.active { background: #eff6ff; color: #2563eb; border-right: 4px solid #2563eb; }
-        .glass-effect { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
-        /* Custom scrollbar to add professional feel */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .active-link { background: #eff6ff; color: #2563eb; border-right: 4px solid #2563eb; }
+        .glass { backdrop-filter: blur(16px); background: rgba(255, 255, 255, 0.8); }
+        .form-input { width: 100%; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; outline: none; transition: 0.3s; }
+        .form-input:focus { border-color: #3b82f6; ring: 2px; ring-color: #bfdbfe; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 overflow-hidden">
+<body class="bg-[#f8fafc] text-slate-800 overflow-hidden">
 
 <div class="flex h-screen">
     <aside class="w-72 bg-white border-r border-slate-200 flex flex-col z-50">
         <div class="p-8 border-b">
             <div class="flex items-center gap-3">
-                <div class="p-2 bg-blue-600 rounded-lg text-white"><i class="fas fa-school fa-lg"></i></div>
-                <h1 class="text-xl font-extrabold tracking-tight">SCHOOL-MS</h1>
+                <div class="p-2 bg-blue-600 rounded-lg text-white"><i class="fas fa-university fa-lg"></i></div>
+                <h1 class="text-xl font-bold tracking-tight text-blue-900">ELITE-SCHOOL</h1>
             </div>
         </div>
-        
-        <nav class="flex-1 p-4 space-y-1 overflow-y-auto" id="main-nav">
-            <p class="text-[10px] uppercase font-bold text-slate-400 ml-4 mb-2">Main Menu</p>
-            <button onclick="router.navigate('dashboard')" class="nav-btn sidebar-item active w-full flex items-center p-3 rounded-xl transition-all">
-                <i class="fas fa-home w-8"></i> <span>Dashboard</span>
+        <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+            <button onclick="router.navigate('dashboard')" class="nav-btn w-full flex items-center p-3 rounded-xl transition-all hover:bg-slate-50">
+                <i class="fas fa-chart-pie w-8"></i> Dashboard
             </button>
-            <button onclick="router.navigate('students')" class="nav-btn sidebar-item w-full flex items-center p-3 rounded-xl transition-all">
-                <i class="fas fa-user-graduate w-8"></i> <span>Ardayda</span>
+            <button onclick="router.navigate('students')" class="nav-btn w-full flex items-center p-3 rounded-xl transition-all hover:bg-slate-50">
+                <i class="fas fa-user-graduate w-8"></i> Ardayda
             </button>
-            <button onclick="router.navigate('teachers')" class="nav-btn sidebar-item w-full flex items-center p-3 rounded-xl transition-all">
-                <i class="fas fa-chalkboard-teacher w-8"></i> <span>Macallimiinta</span>
+            <button onclick="router.navigate('teachers')" class="nav-btn w-full flex items-center p-3 rounded-xl transition-all hover:bg-slate-50">
+                <i class="fas fa-chalkboard-teacher w-8"></i> Macallimiinta
             </button>
-            <button onclick="router.navigate('classes')" class="nav-btn sidebar-item w-full flex items-center p-3 rounded-xl transition-all">
-                <i class="fas fa-layer-group w-8"></i> <span>Fasallada</span>
-            </button>
-            
-            <p class="text-[10px] uppercase font-bold text-slate-400 ml-4 mt-6 mb-2">Finance & HR</p>
-            <button onclick="router.navigate('fees')" class="nav-btn sidebar-item w-full flex items-center p-3 rounded-xl transition-all">
-                <i class="fas fa-money-check-alt w-8"></i> <span>Lacagaha</span>
-            </button>
-            <button onclick="router.navigate('reports')" class="nav-btn sidebar-item w-full flex items-center p-3 rounded-xl transition-all">
-                <i class="fas fa-chart-line w-8"></i> <span>Warbixinnada</span>
-            </button>
-            <button onclick="router.navigate('settings')" class="nav-btn sidebar-item w-full flex items-center p-3 rounded-xl transition-all">
-                <i class="fas fa-cog w-8"></i> <span>Settings</span>
+            <button onclick="router.navigate('fees')" class="nav-btn w-full flex items-center p-3 rounded-xl transition-all hover:bg-slate-50">
+                <i class="fas fa-receipt w-8"></i> Lacagaha & Invoice
             </button>
         </nav>
     </aside>
 
     <main class="flex-1 flex flex-col overflow-hidden">
-        <header class="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 glass-effect">
-            <div id="breadcrumb" class="text-slate-500 font-medium">Dashboard / Overview</div>
-            <div class="flex items-center gap-6">
-                <div class="relative">
-                    <input type="text" placeholder="Raadi halkan..." class="bg-slate-100 border-none rounded-full px-5 py-2 w-64 focus:ring-2 focus:ring-blue-500 transition-all outline-none">
-                </div>
-                <button class="text-slate-400 hover:text-blue-600"><i class="fas fa-bell fa-lg"></i></button>
-                <div class="flex items-center gap-3 pl-4 border-l">
-                    <div class="text-right">
-                        <p class="text-sm font-bold">Admin User</p>
-                        <p class="text-[10px] text-green-500 uppercase">Online Now</p>
-                    </div>
-                    <img src="https://ui-avatars.com/api/?name=Admin&background=0D8ABC&color=fff" class="w-10 h-10 rounded-full border-2 border-white shadow-sm">
-                </div>
+        <header class="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 glass sticky top-0">
+            <h2 id="page-title" class="text-xl font-bold">Dashboard</h2>
+            <div class="flex items-center gap-4 text-sm font-medium">
+                <span id="current-date"></span>
+                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">A</div>
             </div>
         </header>
 
-        <section id="app-view" class="flex-1 overflow-y-auto p-8 animate__animated animate__fadeIn">
+        <section id="app-view" class="flex-1 overflow-y-auto p-8 bg-[#f8fafc]">
             </section>
     </main>
 </div>
 
-<script id="dashboard-tpl" type="text/template">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 transform hover:scale-105 transition-all">
-            <div class="flex justify-between items-start mb-4">
-                <div class="p-3 bg-blue-50 text-blue-600 rounded-xl"><i class="fas fa-users fa-xl"></i></div>
-                <span class="text-green-500 text-xs font-bold">+12%</span>
+<div id="invoice-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[100]">
+    <div class="bg-white w-full max-w-2xl p-10 rounded-2xl shadow-2xl relative animate__animated animate__zoomIn">
+        <button onclick="toggleInvoice()" class="absolute top-5 right-5 text-slate-400 hover:text-red-500"><i class="fas fa-times fa-xl"></i></button>
+        <div id="invoice-content">
             </div>
-            <p class="text-slate-500 text-sm font-medium">Warta Ardayda</p>
-            <h3 class="text-3xl font-black mt-1">1,247</h3>
-        </div>
-        </div>
-    
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
-            <h4 class="font-bold text-lg mb-6">Lacagaha Soo Xarooday (2024)</h4>
-            <canvas id="incomeChart" height="200"></canvas>
-        </div>
-        <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
-            <h4 class="font-bold text-lg mb-6">Diiwaangelintii U Dambeysay</h4>
-            <div class="space-y-4">
-                <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold">JD</div>
-                        <div><p class="text-sm font-bold">John Doe</p><p class="text-xs text-slate-400">Grade 10 - Science</p></div>
-                    </div>
-                    <span class="text-[10px] bg-blue-100 text-blue-600 px-2 py-1 rounded-full">New</span>
-                </div>
-            </div>
+        <div class="mt-8 flex justify-end gap-3">
+            <button onclick="window.print()" class="bg-slate-800 text-white px-6 py-2 rounded-lg"><i class="fas fa-print mr-2"></i> Print Invoice</button>
         </div>
     </div>
-</script>
+</div>
 
 <script>
-    /**
-     * Nidaamka wuxuu ka kooban yahay:
-     * 1. State Management (Xogta hadda jirta)
-     * 2. Router (Bedelaada boggaga)
-     * 3. API Handlers (Google Sheets interaction)
-     * 4. UI Renderers (Dhismaha tables-ka)
-     */
-
+    // --- APP STATE & ROUTER ---
     const State = {
+        activePage: 'dashboard',
+        subjects: ['Xisaab', 'Af-Soomaali', 'English', 'Biology', 'Chemistry', 'Physics', 'Taariikh', 'Juqraafi'],
         students: [],
-        teachers: [],
-        currentUser: 'Admin',
-        activePage: 'dashboard'
+        teachers: []
     };
 
     const router = {
         navigate: function(page) {
             State.activePage = page;
-            this.updateUI();
-            this.loadPageContent(page);
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-link'));
+            // Highlight active link logic
+            document.getElementById('page-title').innerText = page.toUpperCase();
+            this.render();
         },
-        updateUI: function() {
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`[onclick="router.navigate('${State.activePage}')"]`).classList.add('active');
-            document.getElementById('breadcrumb').innerText = `Home / ${State.activePage.toUpperCase()}`;
-        },
-        loadPageContent: function(page) {
+        render: function() {
             const view = document.getElementById('app-view');
-            view.innerHTML = '<div class="flex justify-center py-20"><i class="fas fa-spinner fa-spin fa-3x text-blue-600"></i></div>';
-            
-            setTimeout(() => { // Simulatiing network delay
-                switch(page) {
-                    case 'dashboard': renderDashboard(); break;
-                    case 'students': renderStudentsPage(); break;
-                    case 'fees': renderFeesPage(); break;
-                    default: view.innerHTML = `<h1 class="text-4xl font-bold">Coming Soon: ${page}</h1>`;
-                }
-            }, 500);
+            if (State.activePage === 'dashboard') renderDashboard(view);
+            if (State.activePage === 'students') renderStudents(view);
+            if (State.activePage === 'teachers') renderTeachers(view);
+            if (State.activePage === 'fees') renderFees(view);
         }
     };
 
-    function renderDashboard() {
-        const view = document.getElementById('app-view');
-        view.innerHTML = document.getElementById('dashboard-tpl').innerHTML;
-        
-        // Initialize Chart
-        const ctx = document.getElementById('incomeChart').getContext('2d');
+    // --- DASHBOARD ---
+    function renderDashboard(view) {
+        view.innerHTML = `
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                    <p class="text-slate-400 text-sm">Ardayda Guud</p>
+                    <h3 class="text-3xl font-black text-blue-600">452</h3>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                    <p class="text-slate-400 text-sm">Macallimiinta</p>
+                    <h3 class="text-3xl font-black text-orange-600">28</h3>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                    <p class="text-slate-400 text-sm">Dakhliga Bisha</p>
+                    <h3 class="text-3xl font-black text-green-600">$12,400</h3>
+                </div>
+            </div>
+            <div class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
+                <canvas id="mainChart" height="100"></canvas>
+            </div>
+        `;
+        const ctx = document.getElementById('mainChart').getContext('2d');
         new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Dakhliga ($)',
-                    data: [1200, 1900, 3000, 5000, 2400, 3500],
-                    borderColor: '#2563eb',
-                    tension: 0.4,
-                    fill: true,
-                    backgroundColor: 'rgba(37, 99, 235, 0.1)'
-                }]
-            },
-            options: { responsive: true, plugins: { legend: { display: false } } }
+            type: 'bar',
+            data: { labels: ['Jan', 'Feb', 'Mar', 'Apr'], datasets: [{ label: 'Revenue', data: [500, 800, 1200, 900], backgroundColor: '#3b82f6' }] }
         });
     }
 
-    function renderStudentsPage() {
-        document.getElementById('app-view').innerHTML = `
+    // --- STUDENT REGISTRATION & LIST ---
+    function renderStudents(view) {
+        view.innerHTML = `
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-2xl font-black">Maamulka Ardayda</h2>
-                <button onclick="openModal('student')" class="bg-blue-600 text-white px-6 py-2 rounded-xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all">
-                    + Ku dar Arday
+                <button onclick="showStudentForm()" class="bg-blue-600 text-white px-6 py-2 rounded-xl font-bold shadow-lg shadow-blue-200">
+                    + Diiwaangeli Arday
                 </button>
             </div>
-            <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                 <table class="w-full text-left">
-                    <thead class="bg-slate-50 border-b">
-                        <tr>
-                            <th class="p-5 text-xs font-bold uppercase text-slate-400">ID</th>
-                            <th class="p-5 text-xs font-bold uppercase text-slate-400">Ardayga</th>
-                            <th class="p-5 text-xs font-bold uppercase text-slate-400">Fasalka</th>
-                            <th class="p-5 text-xs font-bold uppercase text-slate-400">Status</th>
-                            <th class="p-5 text-xs font-bold uppercase text-slate-400">Actions</th>
-                        </tr>
+                    <thead class="bg-slate-50 text-slate-400 text-[10px] uppercase font-bold tracking-widest border-b">
+                        <tr><th class="p-5">Ardayga</th><th class="p-5">Maadooyinka</th><th class="p-5">Masuulka</th><th class="p-5">Lacagta</th><th class="p-5">Action</th></tr>
                     </thead>
-                    <tbody class="divide-y">
-                        <tr class="hover:bg-slate-50 transition-all">
-                            <td class="p-5 font-bold">#ST-001</td>
-                            <td class="p-5 flex items-center gap-3">
-                                <img src="https://i.pravatar.cc/150?u=1" class="w-8 h-8 rounded-full">
-                                <div><p class="font-bold text-sm">Axmed Cali</p><p class="text-xs text-slate-400">axmed@email.com</p></div>
-                            </td>
-                            <td class="p-5 text-sm">Grade 9B</td>
-                            <td class="p-5"><span class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-[10px] font-bold">Active</span></td>
-                            <td class="p-5">
-                                <button class="text-slate-400 hover:text-blue-600 mr-3"><i class="fas fa-edit"></i></button>
-                                <button class="text-slate-400 hover:text-red-600"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>
-                    </tbody>
+                    <tbody id="student-list" class="divide-y divide-slate-100">
+                        </tbody>
                 </table>
             </div>
         `;
     }
 
-    // Modal System & Success Alerts
-    function openModal(type) {
+    function showStudentForm() {
         Swal.fire({
-            title: `Diiwaangeli ${type}`,
+            title: '<span class="text-2xl font-bold text-blue-600">Diiwaangelinta Arday Cusub</span>',
+            width: '900px',
             html: `
-                <input id="swal-input1" class="swal2-input" placeholder="Magaca">
-                <input id="swal-input2" class="swal2-input" placeholder="Fasalka">
+                <div class="grid grid-cols-2 gap-4 text-left p-4">
+                    <div class="col-span-2"><label class="text-xs font-bold uppercase">Magaca oo Seddexan</label><input id="s-name" class="form-input" placeholder="Tusaale: Axmed Cali Faarax"></div>
+                    <div><label class="text-xs font-bold uppercase">Maadooyinka (Multi-Select)</label>
+                        <select id="s-subjects" class="form-input" multiple size="4">
+                            ${State.subjects.map(s => `<option value="${s}">${s}</option>`).join('')}
+                        </select>
+                        <p class="text-[10px] text-slate-400">Ctrl + Click si aad u dooratid wax ka badan hal</p>
+                    </div>
+                    <div><label class="text-xs font-bold uppercase">Lacagta Bisha ($)</label><input id="s-fee" type="number" class="form-input" placeholder="50"></div>
+                    <div><label class="text-xs font-bold uppercase">Taleefanka Ardayga</label><input id="s-phone" class="form-input" placeholder="61XXXXXXX"></div>
+                    <div><label class="text-xs font-bold uppercase">Xaafadda</label><input id="s-area" class="form-input" placeholder="Hodan"></div>
+                    <div class="col-span-2 border-t pt-4 mt-2"><h4 class="font-bold text-blue-500">Xogta Masuulka</h4></div>
+                    <div><label class="text-xs font-bold uppercase">Magaca Masuulka</label><input id="g-name" class="form-input"></div>
+                    <div><label class="text-xs font-bold uppercase">Xiriirka (Aabe, Hooyo, iwm)</label><input id="g-rel" class="form-input"></div>
+                    <div class="col-span-2"><label class="text-xs font-bold uppercase">Taleefanka Masuulka</label><input id="g-phone" class="form-input"></div>
+                </div>
             `,
-            focusConfirm: false,
-            confirmButtonText: 'Keydi Xogta',
             showCancelButton: true,
+            confirmButtonText: 'Diiwaangeli',
+            confirmButtonColor: '#2563eb',
             preConfirm: () => {
-                return [
-                    document.getElementById('swal-input1').value,
-                    document.getElementById('swal-input2').value
-                ]
+                const subjects = Array.from(document.getElementById('s-subjects').selectedOptions).map(o => o.value);
+                return {
+                    name: document.getElementById('s-name').value,
+                    subjects: subjects,
+                    fee: document.getElementById('s-fee').value,
+                    parent: document.getElementById('g-name').value
+                }
             }
-        }).then((result) => {
+        }).then(result => {
             if (result.isConfirmed) {
-                Swal.fire('La Keydiyey!', 'Xogta si guul leh ayaa loo keydiyey.', 'success');
+                Swal.fire('Guul!', 'Ardayga waa la keydiyey', 'success');
             }
         });
     }
 
-    // Init App
+    // --- TEACHER MANAGEMENT ---
+    function renderTeachers(view) {
+        view.innerHTML = `
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-2xl font-black">Maamulka Macallimiinta</h2>
+                <button onclick="showTeacherForm()" class="bg-orange-500 text-white px-6 py-2 rounded-xl font-bold shadow-lg shadow-orange-200">
+                    + Diiwaangeli Macallin
+                </button>
+            </div>
+            `;
+    }
+
+    function showTeacherForm() {
+        Swal.fire({
+            title: 'Diiwaangeli Macallin',
+            html: `
+                <div class="text-left p-4 space-y-4">
+                    <input id="t-name" class="form-input" placeholder="Magaca Macallinka">
+                    <select id="t-subjects" class="form-input" multiple>
+                        ${State.subjects.map(s => `<option value="${s}">${s}</option>`).join('')}
+                    </select>
+                </div>
+            `
+        });
+    }
+
+    // --- PAYMENT & INVOICE ---
+    function renderFees(view) {
+        view.innerHTML = `
+            <div class="max-w-4xl mx-auto bg-white p-10 rounded-3xl shadow-sm border border-slate-100">
+                <h2 class="text-2xl font-black mb-8">Lacag Qabashada (Quick Invoice)</h2>
+                <div class="space-y-6">
+                    <div class="grid grid-cols-2 gap-6">
+                        <div><label class="text-xs font-bold uppercase mb-2 block">Raadi Ardayga</label><input id="p-search" class="form-input" placeholder="Magaca ama ID-ga"></div>
+                        <div><label class="text-xs font-bold uppercase mb-2 block">Bisha</label><select class="form-input"><option>January 2024</option><option>February 2024</option></select></div>
+                    </div>
+                    <div class="p-6 bg-slate-50 rounded-2xl flex justify-between items-center">
+                        <div><p class="text-sm text-slate-500">Total Ardayga looga baahan yahay</p><h1 class="text-4xl font-black text-blue-600">$50.00</h1></div>
+                        <button onclick="generateInvoice('Axmed Cali Faarax', 50, 'January')" class="bg-green-500 text-white px-10 py-4 rounded-2xl font-bold shadow-xl shadow-green-100 hover:scale-105 transition-all">
+                            BIXI LACAGTA & PRINT
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function generateInvoice(name, amount, month) {
+        const modal = document.getElementById('invoice-modal');
+        const content = document.getElementById('invoice-content');
+        const invNo = Math.floor(Math.random() * 10000);
+        
+        content.innerHTML = `
+            <div class="text-center mb-10 border-b pb-6">
+                <h1 class="text-3xl font-black text-blue-600 tracking-tighter">ELITE SCHOOL SYSTEM</h1>
+                <p class="text-slate-400">Degmada Hodan, Muqdisho, Somalia | Tel: 615000000</p>
+            </div>
+            <div class="flex justify-between mb-10">
+                <div><p class="text-xs font-bold text-slate-400 uppercase">Ku socota</p><h4 class="text-xl font-bold">${name}</h4><p class="text-sm text-slate-500">Student ID: #ST-${invNo}</p></div>
+                <div class="text-right">
+                    <p class="text-xs font-bold text-slate-400 uppercase">Invoice No</p><h4 class="text-xl font-bold">INV-${invNo}</h4>
+                    <p class="text-xs font-bold text-slate-400 uppercase mt-2">Date</p><h4 class="font-bold">${new Date().toLocaleDateString()}</h4>
+                </div>
+            </div>
+            <table class="w-full mb-10">
+                <thead class="bg-slate-50"><tr class="text-left"><th class="p-3">Description</th><th class="p-3 text-right">Amount</th></tr></thead>
+                <tbody><tr class="border-b"><td class="p-3 font-medium text-slate-700">School Monthly Fee - ${month}</td><td class="p-3 text-right font-bold">$${amount}.00</td></tr></tbody>
+            </table>
+            <div class="flex justify-between items-center p-6 bg-blue-600 rounded-2xl text-white">
+                <h3 class="font-bold text-lg uppercase">Total Paid</h3>
+                <h1 class="text-3xl font-black">$${amount}.00</h1>
+            </div>
+            <p class="text-center text-[10px] text-slate-400 mt-10 italic">Mahadsanid! Lacagtaan dib looma soo celin karo.</p>
+        `;
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function toggleInvoice() {
+        document.getElementById('invoice-modal').classList.add('hidden');
+    }
+
+    // --- INIT ---
+    document.getElementById('current-date').innerText = new Date().toDateString();
     router.navigate('dashboard');
 </script>
 </body>
