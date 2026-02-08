@@ -4,103 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>School Management System</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        body { background-color: #f0f2f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .nav-tabs .nav-link { color: #495057; font-weight: 600; border: none; }
-        .nav-tabs .nav-link.active { color: #0d6efd; border-bottom: 3px solid #0d6efd; background: none; }
-        .card { border-radius: 15px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .btn-save { background-color: #0d6efd; color: white; border-radius: 8px; padding: 10px; }
+        body { background-color: #f3f4f6; font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body>
+<body class="flex items-center justify-center min-h-screen">
 
-<div class="container py-5">
-    <div class="text-center mb-5">
-        <h1 class="fw-bold text-dark">Maamulka Dugsiga</h1>
-        <p class="text-muted">Nidaam fudud oo ku shaqaynaya Google Sheets</p>
-    </div>
-
-    <ul class="nav nav-tabs justify-content-center mb-4" id="myTab" role="tablist">
-        <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#student">Diiwaangelinta</button></li>
-        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#attendance">Attendance</button></li>
-        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#fees">Lacagaha</button></li>
-    </ul>
-
-    <div class="tab-content mt-3">
-        <div class="tab-pane fade show active" id="student">
-            <div class="col-md-6 mx-auto card p-4">
-                <h4 class="mb-3">Xogta Ardayga Cusub</h4>
-                <form onsubmit="handleForm(event, 'student')">
-                    <input type="text" id="s_name" class="form-control mb-3" placeholder="Magaca oo dhammaystiran" required>
-                    <input type="text" id="s_class" class="form-control mb-3" placeholder="Fasalka" required>
-                    <input type="tel" id="s_phone" class="form-control mb-3" placeholder="Telefoonka Waalidka" required>
-                    <button type="submit" class="btn btn-save w-100">Kaydi Ardayga</button>
-                </form>
-            </div>
-        </div>
-
-        <div class="tab-pane fade" id="attendance">
-            <div class="col-md-6 mx-auto card p-4">
-                <h4 class="mb-3">Xaadirinta Maalinlaha ah</h4>
-                <form onsubmit="handleForm(event, 'attendance')">
-                    <input type="text" id="a_name" class="form-control mb-3" placeholder="Magaca Ardayga" required>
-                    <select id="a_status" class="form-select mb-3">
-                        <option value="Xaadir">Xaadir (Present)</option>
-                        <option value="Ma Joogo">Ma Joogo (Absent)</option>
-                    </select>
-                    <button type="submit" class="btn btn-save w-100">Diiwaangeli Xaadirinta</button>
-                </form>
-            </div>
-        </div>
-
-        <div class="tab-pane fade" id="fees">
-            <div class="col-md-6 mx-auto card p-4">
-                <h4 class="mb-3">Maareynta Lacagaha</h4>
-                <form onsubmit="handleForm(event, 'fees')">
-                    <input type="text" id="f_name" class="form-control mb-3" placeholder="Magaca Ardayga" required>
-                    <input type="number" id="f_amount" class="form-control mb-3" placeholder="Cadadka Lacagta ($)" required>
-                    <input type="text" id="f_month" class="form-control mb-3" placeholder="Bisha" required>
-                    <button type="submit" class="btn btn-save w-100">Kaydi Lacagta</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    const scriptURL = 'HALKAN_GELI_WEB_APP_URL';
-
-    async function handleForm(event, type) {
-        event.preventDefault();
+    <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md border-t-4 border-blue-600">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Diiwaangelinta Ardayda</h2>
         
-        Swal.fire({ title: 'Waa la dirayaa...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+        <form id="studentForm" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Magaca Buuxa</label>
+                <input type="text" id="name" required 
+                    class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-200">
+            </div>
 
-        let data = { type: type };
-        if(type === 'student') {
-            data.name = document.getElementById('s_name').value;
-            data.className = document.getElementById('s_class').value;
-            data.phone = document.getElementById('s_phone').value;
-        } else if(type === 'attendance') {
-            data.name = document.getElementById('a_name').value;
-            data.status = document.getElementById('a_status').value;
-        } else if(type === 'fees') {
-            data.name = document.getElementById('f_name').value;
-            data.amount = document.getElementById('f_amount').value;
-            data.month = document.getElementById('f_month').value;
-        }
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Fasalka</label>
+                <input type="text" id="class" required 
+                    class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-200">
+            </div>
 
-        try {
-            await fetch(scriptURL, { method: 'POST', body: JSON.stringify(data) });
-            Swal.fire('Guul!', 'Xogta si fiican ayaa loo kaydiyay.', 'success');
-            event.target.reset();
-        } catch (error) {
-            Swal.fire('Khalad', 'Xogta lama kaydin karo hadda.', 'error');
-        }
-    }
-</script>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Taleefanka</label>
+                <input type="tel" id="phone" required 
+                    class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-200">
+            </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <button type="submit" id="submitBtn"
+                class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transform hover:scale-[1.02] transition duration-200 shadow-lg">
+                Keydi Xogta
+            </button>
+        </form>
+    </div>
+
+    <script>
+        const scriptURL = 'HALKAN_GELI_URL_KA_APPS_SCRIPT'; // <--- Ku bedel Web App URL-kaagii
+        const form = document.getElementById('studentForm');
+        const btn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            
+            // Tus loading popup
+            Swal.fire({
+                title: 'Waa la dirayaa...',
+                text: 'Fadlan sug inta xogta la keydinayo',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading() }
+            });
+
+            btn.disabled = true;
+
+            const data = {
+                name: document.getElementById('name').value,
+                class: document.getElementById('class').value,
+                phone: document.getElementById('phone').value
+            };
+
+            fetch(scriptURL, {
+                method: 'POST',
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Waa la keydiyey!',
+                    text: 'Xogta ardayga si guul leh ayaa loo kaydiyey.',
+                    confirmButtonColor: '#2563eb'
+                });
+                form.reset();
+                btn.disabled = false;
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Khalad ayaa dhacay',
+                    text: 'Lama xiriiri karo database-ka.',
+                });
+                btn.disabled = false;
+            });
+        });
+    </script>
 </body>
 </html>
