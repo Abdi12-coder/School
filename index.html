@@ -3,95 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Management System</title>
+    <title>School Management System - Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .active-link { background-color: #1e293b; border-left: 4px solid #3b82f6; }
+        .hidden-section { display: none; }
+    </style>
 </head>
 <body class="bg-gray-50 font-sans">
 
-    <div class="flex h-screen">
-        <div class="w-64 bg-white border-r shadow-sm">
-            <div class="p-6 border-b">
-                <h1 class="text-xl font-bold text-gray-800">School Management</h1>
-            </div>
-            <nav class="p-4 space-y-2">
-                <p class="text-xs text-gray-400 uppercase font-semibold pl-2">Main</p>
-                <a href="#" class="flex items-center p-2 bg-black text-white rounded-lg">
-                    <i class="fas fa-th-large mr-3"></i> Dashboard
+    <div class="flex min-h-screen">
+        <aside class="w-64 bg-slate-900 text-white hidden md:block">
+            <div class="p-6 text-xl font-bold border-b border-slate-700">School Admin</div>
+            <nav class="mt-6">
+                <a href="#" onclick="showSection('dashboard')" class="block py-3 px-6 hover:bg-slate-800 transition active-link" id="link-dashboard">
+                    <i class="fas fa-home mr-3"></i> Dashboard
                 </a>
-                <a href="#" class="flex items-center p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition">
+                <a href="#" onclick="showSection('students')" class="block py-3 px-6 hover:bg-slate-800 transition" id="link-students">
                     <i class="fas fa-user-graduate mr-3"></i> Students
                 </a>
-                <a href="#" class="flex items-center p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition">
+                <a href="#" onclick="showSection('teachers')" class="block py-3 px-6 hover:bg-slate-800 transition" id="link-teachers">
                     <i class="fas fa-chalkboard-teacher mr-3"></i> Teachers
                 </a>
-                <a href="#" class="flex items-center p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition">
-                    <i class="fas fa-users mr-3"></i> Parents
-                </a>
-                <a href="#" class="flex items-center p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition">
-                    <i class="fas fa-book mr-3"></i> Classes
-                </a>
-                <p class="text-xs text-gray-400 uppercase font-semibold pl-2 pt-4">Financial</p>
-                <a href="#" class="flex items-center p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition">
-                    <i class="fas fa-file-invoice-dollar mr-3"></i> Fee Management
+                <a href="#" onclick="showSection('fees')" class="block py-3 px-6 hover:bg-slate-800 transition" id="link-fees">
+                    <i class="fas fa-money-bill-wave mr-3"></i> Fee Management
                 </a>
             </nav>
-        </div>
+        </aside>
 
-        <div class="flex-1 flex flex-col overflow-hidden">
-            <header class="h-16 bg-white border-b flex items-center justify-between px-8">
-                <h2 class="text-xl font-semibold text-gray-800">Dashboard</h2>
-                <button onclick="showAddStudentForm()" class="bg-black text-white px-4 py-2 rounded-lg text-sm">
-                    + Add Student
-                </button>
-            </header>
-
-            <main class="flex-1 overflow-x-hidden overflow-y-auto p-8">
+        <main class="flex-1 p-8">
+            
+            <section id="dashboard" class="content-section">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">Dashboard Overview</h1>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                    <div class="bg-white p-6 rounded-xl border shadow-sm">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-sm text-gray-500">Total Students</p>
-                                <h3 class="text-2xl font-bold mt-1">1,247</h3>
-                                <p class="text-xs text-blue-500 mt-2">Active students this year</p>
-                            </div>
-                            <div class="p-2 bg-blue-50 rounded-lg text-blue-500">
-                                <i class="fas fa-user-graduate"></i>
-                            </div>
-                        </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-500">
+                        <p class="text-gray-500 text-sm uppercase">Total Students</p>
+                        <h3 class="text-2xl font-bold" id="stat-students">1,247</h3>
                     </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-green-500">
+                        <p class="text-gray-500 text-sm uppercase">Teachers</p>
+                        <h3 class="text-2xl font-bold">84</h3>
                     </div>
-
-                <div class="bg-white rounded-xl border shadow-sm p-6">
-                    <h4 class="font-bold text-gray-800 mb-4">Recent Activities</h4>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-purple-500">
+                        <p class="text-gray-500 text-sm uppercase">Classes</p>
+                        <h3 class="text-2xl font-bold">32</h3>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-orange-500">
+                        <p class="text-gray-500 text-sm uppercase">Academic Year</p>
+                        <h3 class="text-2xl font-bold">2024-2025</h3>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <h2 class="text-lg font-semibold mb-4 text-gray-700">Recent Activities</h2>
                     <div class="space-y-4">
-                        <div class="flex items-center text-sm border-l-4 border-blue-500 pl-4">
-                            <p>New student <strong>John Doe</strong> enrolled in Grade 10A</p>
-                            <span class="ml-auto text-gray-400">2 hours ago</span>
+                        <div class="flex items-center text-sm border-b pb-2 text-gray-600">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                            New student John Doe enrolled in Grade 10A - <span class="ml-2 italic text-gray-400">2 hours ago</span>
                         </div>
                     </div>
                 </div>
-            </main>
-        </div>
+            </section>
+
+            <section id="students" class="content-section hidden-section">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-bold text-gray-800">Student Management</h1>
+                    <button onclick="openAddStudent()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                        + Add Student
+                    </button>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <table class="w-full text-left">
+                        <thead class="bg-gray-50 border-b">
+                            <tr>
+                                <th class="p-4 font-semibold text-gray-600">Name</th>
+                                <th class="p-4 font-semibold text-gray-600">Class</th>
+                                <th class="p-4 font-semibold text-gray-600">Phone</th>
+                                <th class="p-4 font-semibold text-gray-600">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="student-table-body" class="divide-y">
+                            </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="fees" class="content-section hidden-section">
+                <h1 class="text-2xl font-bold text-gray-800 mb-6">Fee Management</h1>
+                <div class="bg-white p-12 rounded-xl shadow-sm text-center">
+                    <i class="fas fa-tools text-4xl text-gray-300 mb-4"></i>
+                    <p class="text-gray-500 text-lg">Qaybtan waa lagu guda jiraa dhismaheeda...</p>
+                </div>
+            </section>
+
+        </main>
     </div>
 
     <script>
-        // Tusaale: Popup-ka Add Student
-        function showAddStudentForm() {
-            Swal.fire({
+        const scriptURL = 'HALKAN_GELI_WEB_APP_URL_KAAGA';
+
+        // 1. Function lagu kala bedelo sections-ka
+        function showSection(id) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.add('hidden-section'));
+            document.getElementById(id).classList.remove('hidden-section');
+            
+            document.querySelectorAll('nav a').forEach(a => a.classList.remove('active-link'));
+            document.getElementById('link-' + id).classList.add('active-link');
+        }
+
+        // 2. Popup-ka lagu darayo ardayga cusub
+        async function openAddStudent() {
+            const { value: formValues } = await Swal.fire({
                 title: 'Diiwaangeli Arday Cusub',
                 html:
-                    '<input id="swal-input1" class="swal2-input" placeholder="Magaca">' +
-                    '<input id="swal-input2" class="swal2-input" placeholder="Fasalka">',
+                    '<input id="swal-name" class="swal2-input" placeholder="Magaca oo buuxa">' +
+                    '<input id="swal-class" class="swal2-input" placeholder="Fasalka">' +
+                    '<input id="swal-phone" class="swal2-input" placeholder="Taleefanka">',
+                focusConfirm: false,
                 showCancelButton: true,
                 confirmButtonText: 'Keydi',
-                confirmButtonColor: '#000',
                 preConfirm: () => {
-                    // Halkan code-kaagii hore ee Google Sheets ayaa galaya
+                    return {
+                        name: document.getElementById('swal-name').value,
+                        class: document.getElementById('swal-class').value,
+                        phone: document.getElementById('swal-phone').value
+                    }
                 }
             });
+
+            if (formValues) {
+                saveStudent(formValues);
+            }
         }
+
+        // 3. Keydinta xogta
+        function saveStudent(data) {
+            Swal.fire({ title: 'Waa la dirayaa...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }});
+
+            fetch(scriptURL, { method: 'POST', body: JSON.stringify(data) })
+            .then(() => {
+                Swal.fire('Guul!', 'Ardayga waa la keydiyey.', 'success');
+                loadStudents(); // Dib u soo cusboonaysii liiska
+            })
+            .catch(() => Swal.fire('Khalad!', 'Xogta ma xaroon.', 'error'));
+        }
+
+        // 4. Soo akhrinta xogta Google Sheets
+        function loadStudents() {
+            fetch(scriptURL)
+            .then(res => res.json())
+            .then(data => {
+                const tbody = document.getElementById('student-table-body');
+                tbody.innerHTML = '';
+                data.forEach(row => {
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-4">${row[1]}</td>
+                            <td class="p-4">${row[2]}</td>
+                            <td class="p-4">${row[3]}</td>
+                            <td class="p-4"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs italic">Active</span></td>
+                        </tr>`;
+                });
+            });
+        }
+
+        // Bilawga markuu bogga furmo
+        window.onload = loadStudents;
     </script>
 </body>
 </html>
