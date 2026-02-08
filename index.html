@@ -3,284 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduMaster Pro</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>School Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <style>
-        :root { --primary: #2563eb; --secondary: #64748b; --bg: #f1f5f9; --sidebar: #1e293b; }
-        body { background-color: var(--bg); font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        
-        /* Layout */
-        .sidebar { width: 260px; height: 100vh; position: fixed; background: var(--sidebar); color: white; transition: 0.3s; z-index: 1000; }
-        .main-content { margin-left: 260px; padding: 2rem; transition: 0.3s; }
-        .nav-link { color: #94a3b8; padding: 12px 20px; border-radius: 8px; margin-bottom: 5px; font-weight: 500; }
-        .nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.1); color: white; }
-        .nav-link i { margin-right: 10px; font-size: 1.1rem; }
-        
-        /* Cards & Tables */
-        .card-custom { border: none; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); background: white; padding: 20px; }
-        .table thead th { background-color: #f8fafc; color: var(--secondary); font-weight: 600; border-bottom: 2px solid #e2e8f0; }
-        .btn-action { width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; }
-
-        /* Loading Overlay */
-        #loader { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:9999; display:none; justify-content:center; align-items:center;}
-        
-        @media (max-width: 768px) {
-            .sidebar { margin-left: -260px; }
-            .sidebar.active { margin-left: 0; }
-            .main-content { margin-left: 0; }
-        }
+        body { background-color: #f3f4f6; font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body>
+<body class="flex items-center justify-center min-h-screen">
 
-<div id="loader"><div class="spinner-border text-primary" role="status"></div></div>
-
-<div class="sidebar d-flex flex-column p-3" id="sidebar">
-    <h4 class="mb-4 text-center fw-bold text-white"><i class="bi bi-mortarboard-fill"></i> EduMaster</h4>
-    <hr class="text-secondary">
-    <ul class="nav nav-pills flex-column mb-auto">
-        <li class="nav-item"><a href="#" class="nav-link active" onclick="showPage('dashboard')"><i class="bi bi-grid"></i> Dashboard</a></li>
-        <li><a href="#" class="nav-link" onclick="showPage('students')"><i class="bi bi-people"></i> Ardayda</a></li>
-        <li><a href="#" class="nav-link" onclick="showPage('finance')"><i class="bi bi-wallet2"></i> Lacagaha</a></li>
-    </ul>
-    <div class="mt-auto p-3 bg-dark rounded text-center small text-secondary">
-        &copy; 2024 School System
-    </div>
-</div>
-
-<div class="main-content" id="main">
-    <button class="btn btn-primary d-md-none mb-3" onclick="document.getElementById('sidebar').classList.toggle('active')"><i class="bi bi-list"></i></button>
-
-    <div id="dashboard" class="page-section">
-        <h3 class="mb-4 fw-bold">Warbixinta Guud</h3>
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="card-custom border-start border-4 border-primary">
-                    <div class="text-secondary small text-uppercase">Wadarta Ardayda</div>
-                    <h2 class="fw-bold my-2" id="dash-total">0</h2>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card-custom border-start border-4 border-success">
-                    <div class="text-secondary small text-uppercase">Dakhliga Bishan</div>
-                    <h2 class="fw-bold my-2" id="dash-revenue">$0</h2>
-                </div>
-            </div>
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-100">
+        <div class="text-center mb-8">
+            <h2 class="text-2xl font-bold text-gray-800">Diiwaangelinta Ardayda</h2>
+            <p class="text-gray-500 text-sm">Ku dar arday cusub nidaamka</p>
         </div>
-    </div>
 
-    <div id="students" class="page-section d-none">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="fw-bold">Maamulka Ardayda</h3>
-            <button class="btn btn-primary" onclick="openModal()"><i class="bi bi-plus-lg"></i> Arday Cusub</button>
-        </div>
-        
-        <div class="card-custom">
-            <input type="text" id="searchInput" class="form-control mb-3" placeholder="Raadi magac ama ID..." onkeyup="searchTable()">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Magaca</th>
-                            <th>Phone</th>
-                            <th>Fasalka</th>
-                            <th>Fee ($)</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="studentTable">
-                        </tbody>
-                </table>
+        <form id="studentForm" class="space-y-5">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Magaca Full ah</label>
+                <input type="text" id="name" required 
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition duration-200"
+                    placeholder="Tusaale: Ahmed Ali">
             </div>
-        </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Fasalka</label>
+                <input type="text" id="className" required 
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition duration-200"
+                    placeholder="Tusaale: Grade 5">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Telefoonka Waalidka</label>
+                <input type="tel" id="phone" required 
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition duration-200"
+                    placeholder="061xxxxxxx">
+            </div>
+
+            <button type="submit" id="submitBtn"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-md transition duration-300 transform active:scale-95">
+                Keydi Xogta
+            </button>
+        </form>
     </div>
 
-    <div id="finance" class="page-section d-none">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="fw-bold">Biilasha & Maaliyadda</h3>
-            <button class="btn btn-success" onclick="runBilling()"><i class="bi bi-cash-stack"></i> Abuur Biilasha Bisha (Auto)</button>
-        </div>
-        <div class="alert alert-info">
-            <i class="bi bi-info-circle"></i> Button-ka kore wuxuu si toos ah u abuurayaa Invoices-ka bishan ee dhamaan ardayda active-ka ah.
-        </div>
-    </div>
-</div>
+    <script>
+        const scriptURL = 'HALKAAN_GELI_URL_KA_APP_SCRIPT'; // <--- Ku bedel Web App URL-kaagii
+        const form = document.getElementById('studentForm');
+        const btn = document.getElementById('submitBtn');
 
-<div class="modal fade" id="studentModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalTitle">Arday Cusub</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form id="studentForm">
-                    <input type="hidden" id="editId">
-                    <div class="mb-3"><label>Magaca Buuxa</label><input type="text" id="name" class="form-control" required></div>
-                    <div class="mb-3"><label>Telefoonka</label><input type="text" id="phone" class="form-control" required></div>
-                    <div class="mb-3"><label>Fasalka</label>
-                        <select id="classRoom" class="form-select">
-                            <option>Form 1</option><option>Form 2</option><option>Form 3</option><option>Form 4</option>
-                        </select>
-                    </div>
-                    <div class="mb-3"><label>Lacagta ($)</label><input type="number" id="fee" class="form-control" required></div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Xir</button>
-                <button type="button" class="btn btn-primary" onclick="saveStudent()">Keydi</button>
-            </div>
-        </div>
-    </div>
-</div>
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            
+            // Loading Popup
+            btn.disabled = true;
+            btn.innerText = "Laba sugayo...";
+            
+            const data = {
+                name: document.getElementById('name').value,
+                className: document.getElementById('className').value,
+                phone: document.getElementById('phone').value
+            };
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // ---------------- CONFIGURATION ----------------
-    // MUHIIM: Halkan geli URL-kaaga aad ka keentay Apps Script
-    const API_URL = "HALKAN_GELI_APPS_SCRIPT_URL_KAAGA";
-
-    // ---------------- NAVIGATION ----------------
-    function showPage(pageId) {
-        document.querySelectorAll('.page-section').forEach(p => p.classList.add('d-none'));
-        document.getElementById(pageId).classList.remove('d-none');
-        document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-        event.currentTarget.classList.add('active');
-        if(pageId === 'students') loadStudents();
-    }
-
-    // ---------------- CRUD OPERATIONS ----------------
-    
-    // 1. READ (Load Data)
-    async function loadStudents() {
-        document.getElementById('loader').style.display = 'flex';
-        try {
-            const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({action: 'getStudents'})});
-            const json = await res.json();
-            renderTable(json.data);
-            updateDashboard(json.data);
-        } catch(e) { console.error(e); }
-        document.getElementById('loader').style.display = 'none';
-    }
-
-    function renderTable(data) {
-        let html = '';
-        data.forEach(s => {
-            html += `<tr>
-                <td><span class="badge bg-light text-dark border">${s.id}</span></td>
-                <td>${s.name}</td>
-                <td>${s.phone}</td>
-                <td>${s.classRoom}</td>
-                <td>$${s.fee}</td>
-                <td><span class="badge bg-success bg-opacity-10 text-success">Active</span></td>
-                <td>
-                    <button class="btn btn-action btn-outline-primary btn-sm me-1" onclick="editStudent('${s.id}', '${s.name}', '${s.phone}', '${s.classRoom}', '${s.fee}')"><i class="bi bi-pencil"></i></button>
-                    <button class="btn btn-action btn-outline-danger btn-sm" onclick="deleteStudent('${s.id}')"><i class="bi bi-trash"></i></button>
-                </td>
-            </tr>`;
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors', // Muhiim u ah Google Script
+                cache: 'no-cache',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(() => {
+                Swal.fire({
+                    title: "Waad ku guuleysatay!",
+                    text: "Xogta ardayga waa la keydiyay.",
+                    icon: "success",
+                    confirmButtonColor: "#2563eb"
+                });
+                form.reset();
+                btn.disabled = false;
+                btn.innerText = "Keydi Xogta";
+            })
+            .catch(error => {
+                Swal.fire("Cillad!", "Waxbaa qaldamay, isku day mar kale.", "error");
+                btn.disabled = false;
+                btn.innerText = "Keydi Xogta";
+            });
         });
-        document.getElementById('studentTable').innerHTML = html;
-    }
-
-    // 2. CREATE & UPDATE (Save)
-    async function saveStudent() {
-        const id = document.getElementById('editId').value;
-        const data = {
-            name: document.getElementById('name').value,
-            phone: document.getElementById('phone').value,
-            classRoom: document.getElementById('classRoom').value,
-            fee: document.getElementById('fee').value
-        };
-
-        const action = id ? 'updateStudent' : 'addStudent';
-        if(id) data.id = id;
-
-        document.getElementById('loader').style.display = 'flex';
-        await fetch(API_URL, { method: 'POST', body: JSON.stringify({action: action, data: data})});
-        
-        bootstrap.Modal.getInstance(document.getElementById('studentModal')).hide();
-        loadStudents(); // Refresh table
-        Swal.fire('Guul!', 'Xogta waa la keydiyay', 'success');
-    }
-
-    // 3. DELETE
-    function deleteStudent(id) {
-        Swal.fire({
-            title: 'Ma hubtaa?', text: "Laguma soo celin karo ficilkan!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Haa, Tirtir!'
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                document.getElementById('loader').style.display = 'flex';
-                await fetch(API_URL, { method: 'POST', body: JSON.stringify({action: 'deleteStudent', id: id})});
-                loadStudents();
-                Swal.fire('La Tirtiray!', 'Ardaygii waa la saaray.', 'success');
-            }
-        });
-    }
-
-    // 4. BILLING ENGINE
-    function runBilling() {
-        Swal.fire({
-            title: 'Abuur Biilasha?', text: "Tani waxay invoice u samaynaysaa dhamaan ardayda.", icon: 'question', showCancelButton: true, confirmButtonText: 'Bilow'
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                document.getElementById('loader').style.display = 'flex';
-                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({action: 'runBilling'})});
-                const json = await res.json();
-                document.getElementById('loader').style.display = 'none';
-                Swal.fire('Guul!', json.message, 'success');
-            }
-        });
-    }
-
-    // Helpers
-    function openModal() {
-        document.getElementById('studentForm').reset();
-        document.getElementById('editId').value = "";
-        document.getElementById('modalTitle').innerText = "Arday Cusub";
-        new bootstrap.Modal(document.getElementById('studentModal')).show();
-    }
-
-    function editStudent(id, name, phone, cls, fee) {
-        document.getElementById('editId').value = id;
-        document.getElementById('name').value = name;
-        document.getElementById('phone').value = phone;
-        document.getElementById('classRoom').value = cls;
-        document.getElementById('fee').value = fee;
-        document.getElementById('modalTitle').innerText = "Wax ka beddel Ardayga";
-        new bootstrap.Modal(document.getElementById('studentModal')).show();
-    }
-
-    function updateDashboard(data) {
-        document.getElementById('dash-total').innerText = data.length;
-        // Simple calculation for demo
-        let total = data.reduce((acc, curr) => acc + parseInt(curr.fee || 0), 0);
-        document.getElementById('dash-revenue').innerText = "$" + total;
-    }
-    
-    function searchTable() {
-        var input, filter, table, tr, td, i, txtValue;
-        input = document.getElementById("searchInput");
-        filter = input.value.toUpperCase();
-        table = document.getElementById("studentTable");
-        tr = table.getElementsByTagName("tr");
-        for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[1]; // Search by Name
-            if (td) {
-                txtValue = td.textContent || td.innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) { tr[i].style.display = ""; } else { tr[i].style.display = "none"; }
-            }       
-        }
-    }
-    
-    // Initial Load
-    loadStudents();
-</script>
-
+    </script>
 </body>
 </html>
