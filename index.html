@@ -13,10 +13,11 @@
         .glass { backdrop-filter: blur(16px); background: rgba(255, 255, 255, 0.8); }
         .form-input { width: 100%; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; outline: none; transition: 0.3s; }
         .form-input:focus { border-color: #3b82f6; ring: 2px; ring-color: #bfdbfe; }
+        .loader { border: 5px solid #f3f3f3; border-radius: 50%; border-top: 5px solid #3498db; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 5rem auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="bg-[#f8fafc] text-slate-800 overflow-hidden">
-
 <div class="flex h-screen">
     <aside class="w-72 bg-white border-r border-slate-200 flex flex-col z-50">
         <div class="p-8 border-b">
@@ -40,7 +41,6 @@
             </button>
         </nav>
     </aside>
-
     <main class="flex-1 flex flex-col overflow-hidden">
         <header class="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 glass sticky top-0">
             <h2 id="page-title" class="text-xl font-bold">Dashboard</h2>
@@ -49,224 +49,201 @@
                 <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">A</div>
             </div>
         </header>
-
-        <section id="app-view" class="flex-1 overflow-y-auto p-8 bg-[#f8fafc]">
-            </section>
+        <section id="app-view" class="flex-1 overflow-y-auto p-8 bg-[#f8fafc]"></section>
     </main>
 </div>
-
 <div id="invoice-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[100]">
-    <div class="bg-white w-full max-w-2xl p-10 rounded-2xl shadow-2xl relative animate__animated animate__zoomIn">
+    <div class="bg-white w-full max-w-2xl p-10 rounded-2xl shadow-2xl relative">
         <button onclick="toggleInvoice()" class="absolute top-5 right-5 text-slate-400 hover:text-red-500"><i class="fas fa-times fa-xl"></i></button>
-        <div id="invoice-content">
-            </div>
+        <div id="invoice-content"></div>
         <div class="mt-8 flex justify-end gap-3">
-            <button onclick="window.print()" class="bg-slate-800 text-white px-6 py-2 rounded-lg"><i class="fas fa-print mr-2"></i> Print Invoice</button>
+            <button onclick="printInvoice()" class="bg-slate-800 text-white px-6 py-2 rounded-lg"><i class="fas fa-print mr-2"></i> Print Invoice</button>
         </div>
     </div>
 </div>
-
 <script>
-    // --- APP STATE & ROUTER ---
+    function showLoader() { document.getElementById('app-view').innerHTML = '<div class="loader"></div>'; }
     const State = {
         activePage: 'dashboard',
         subjects: ['Xisaab', 'Af-Soomaali', 'English', 'Biology', 'Chemistry', 'Physics', 'Taariikh', 'Juqraafi'],
         students: [],
         teachers: []
     };
-
     const router = {
         navigate: function(page) {
             State.activePage = page;
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-link'));
-            // Highlight active link logic
-            document.getElementById('page-title').innerText = page.toUpperCase();
+            document.getElementById('page-title').innerText = page.charAt(0).toUpperCase() + page.slice(1);
+            document.querySelectorAll('.nav-btn').forEach(b => {
+                 b.classList.remove('active-link');
+                 if(b.innerText.toLowerCase().includes(page)) b.classList.add('active-link');
+            });
             this.render();
         },
         render: function() {
             const view = document.getElementById('app-view');
+            showLoader();
             if (State.activePage === 'dashboard') renderDashboard(view);
             if (State.activePage === 'students') renderStudents(view);
             if (State.activePage === 'teachers') renderTeachers(view);
             if (State.activePage === 'fees') renderFees(view);
         }
     };
-
-    // --- DASHBOARD ---
     function renderDashboard(view) {
         view.innerHTML = `
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-                    <p class="text-slate-400 text-sm">Ardayda Guud</p>
-                    <h3 class="text-3xl font-black text-blue-600">452</h3>
-                </div>
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-                    <p class="text-slate-400 text-sm">Macallimiinta</p>
-                    <h3 class="text-3xl font-black text-orange-600">28</h3>
-                </div>
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-                    <p class="text-slate-400 text-sm">Dakhliga Bisha</p>
-                    <h3 class="text-3xl font-black text-green-600">$12,400</h3>
-                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm"><p class="text-slate-400 text-sm">Ardayda Guud</p><h3 id="total-students" class="text-3xl font-black text-blue-600">...</h3></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm"><p class="text-slate-400 text-sm">Macallimiinta</p><h3 id="total-teachers" class="text-3xl font-black text-orange-600">...</h3></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm"><p class="text-slate-400 text-sm">Dakhliga Bisha</p><h3 class="text-3xl font-black text-green-600">$0</h3></div>
             </div>
-            <div class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
-                <canvas id="mainChart" height="100"></canvas>
-            </div>
-        `;
-        const ctx = document.getElementById('mainChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: { labels: ['Jan', 'Feb', 'Mar', 'Apr'], datasets: [{ label: 'Revenue', data: [500, 800, 1200, 900], backgroundColor: '#3b82f6' }] }
-        });
+            <div class="bg-white p-8 rounded-3xl shadow-sm"><canvas id="mainChart" height="100"></canvas></div>`;
+        google.script.run.withSuccessHandler(s => document.getElementById('total-students').innerText = s.length).getStudents();
+        google.script.run.withSuccessHandler(t => document.getElementById('total-teachers').innerText = t.length).getTeachers();
+        new Chart(document.getElementById('mainChart').getContext('2d'), { type: 'bar', data: { labels: ['Jan', 'Feb', 'Mar', 'Apr'], datasets: [{ label: 'Revenue', data: [500, 800, 1200, 900], backgroundColor: '#3b82f6' }] } });
     }
-
-    // --- STUDENT REGISTRATION & LIST ---
     function renderStudents(view) {
         view.innerHTML = `
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-2xl font-black">Maamulka Ardayda</h2>
-                <button onclick="showStudentForm()" class="bg-blue-600 text-white px-6 py-2 rounded-xl font-bold shadow-lg shadow-blue-200">
-                    + Diiwaangeli Arday
-                </button>
+                <button onclick="showStudentForm()" class="bg-blue-600 text-white px-6 py-2 rounded-xl font-bold shadow-lg shadow-blue-200">+ Diiwaangeli Arday</button>
             </div>
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-                <table class="w-full text-left">
-                    <thead class="bg-slate-50 text-slate-400 text-[10px] uppercase font-bold tracking-widest border-b">
-                        <tr><th class="p-5">Ardayga</th><th class="p-5">Maadooyinka</th><th class="p-5">Masuulka</th><th class="p-5">Lacagta</th><th class="p-5">Action</th></tr>
-                    </thead>
-                    <tbody id="student-list" class="divide-y divide-slate-100">
-                        </tbody>
-                </table>
-            </div>
-        `;
+            <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+                <table class="w-full text-left"><thead class="bg-slate-50 text-slate-400 text-[10px] uppercase font-bold tracking-widest border-b"><tr><th class="p-5">ID</th><th class="p-5">Ardayga</th><th class="p-5">Maadooyinka</th><th class="p-5">Masuulka</th><th class="p-5">Lacagta</th></tr></thead><tbody id="student-list" class="divide-y"></tbody></table>
+            </div>`;
+        fetchAndDisplayStudents();
     }
-
+    function fetchAndDisplayStudents(){
+        google.script.run.withSuccessHandler(students => {
+            State.students = students;
+            const list = document.getElementById('student-list');
+            if(!students || students.length === 0){ list.innerHTML = '<tr><td colspan="5" class="p-5 text-center">Wali wax arday ah lama diiwaan gelin.</td></tr>'; return; }
+            list.innerHTML = students.map(s => `<tr><td class="p-5 font-bold">${s.id}</td><td class="p-5">${s.name}</td><td class="p-5 text-sm">${s.subjects.join(', ')}</td><td class="p-5 text-sm">${s.guardian}</td><td class="p-5 font-bold text-green-500">$${s.fee}</td></tr>`).join('');
+        }).getStudents();
+    }
     function showStudentForm() {
         Swal.fire({
-            title: '<span class="text-2xl font-bold text-blue-600">Diiwaangelinta Arday Cusub</span>',
-            width: '900px',
-            html: `
-                <div class="grid grid-cols-2 gap-4 text-left p-4">
-                    <div class="col-span-2"><label class="text-xs font-bold uppercase">Magaca oo Seddexan</label><input id="s-name" class="form-input" placeholder="Tusaale: Axmed Cali Faarax"></div>
-                    <div><label class="text-xs font-bold uppercase">Maadooyinka (Multi-Select)</label>
-                        <select id="s-subjects" class="form-input" multiple size="4">
-                            ${State.subjects.map(s => `<option value="${s}">${s}</option>`).join('')}
-                        </select>
-                        <p class="text-[10px] text-slate-400">Ctrl + Click si aad u dooratid wax ka badan hal</p>
-                    </div>
-                    <div><label class="text-xs font-bold uppercase">Lacagta Bisha ($)</label><input id="s-fee" type="number" class="form-input" placeholder="50"></div>
-                    <div><label class="text-xs font-bold uppercase">Taleefanka Ardayga</label><input id="s-phone" class="form-input" placeholder="61XXXXXXX"></div>
-                    <div><label class="text-xs font-bold uppercase">Xaafadda</label><input id="s-area" class="form-input" placeholder="Hodan"></div>
+            title: '<span class="text-2xl font-bold text-blue-600">Diiwaangelinta Arday Cusub</span>', width: '900px',
+            html: `<div class="grid grid-cols-2 gap-4 text-left p-4">
+                    <div class="col-span-2"><label class="text-xs font-bold">Magaca oo Seddexan</label><input id="s-name" class="form-input" placeholder="Tusaale: Axmed Cali Faarax"></div>
+                    <div><label class="text-xs font-bold">Maadooyinka</label><select id="s-subjects" class="form-input" multiple size="4">${State.subjects.map(s => `<option value="${s}">${s}</option>`).join('')}</select></div>
+                    <div><label class="text-xs font-bold">Lacagta Bisha ($)</label><input id="s-fee" type="number" class="form-input" placeholder="50"></div>
+                    <div><label class="text-xs font-bold">Taleefanka Ardayga</label><input id="s-phone" class="form-input" placeholder="61XXXXXXX"></div>
+                    <div><label class="text-xs font-bold">Xaafadda</label><input id="s-area" class="form-input" placeholder="Hodan"></div>
                     <div class="col-span-2 border-t pt-4 mt-2"><h4 class="font-bold text-blue-500">Xogta Masuulka</h4></div>
-                    <div><label class="text-xs font-bold uppercase">Magaca Masuulka</label><input id="g-name" class="form-input"></div>
-                    <div><label class="text-xs font-bold uppercase">Xiriirka (Aabe, Hooyo, iwm)</label><input id="g-rel" class="form-input"></div>
-                    <div class="col-span-2"><label class="text-xs font-bold uppercase">Taleefanka Masuulka</label><input id="g-phone" class="form-input"></div>
-                </div>
-            `,
-            showCancelButton: true,
-            confirmButtonText: 'Diiwaangeli',
-            confirmButtonColor: '#2563eb',
+                    <div><label class="text-xs font-bold">Magaca Masuulka</label><input id="g-name" class="form-input"></div>
+                    <div><label class="text-xs font-bold">Xiriirka (Aabe, Hooyo..)</label><input id="g-rel" class="form-input"></div>
+                    <div class="col-span-2"><label class="text-xs font-bold">Taleefanka Masuulka</label><input id="g-phone" class="form-input"></div>
+                </div>`,
+            showCancelButton: true, confirmButtonText: 'Diiwaangeli', confirmButtonColor: '#2563eb',
             preConfirm: () => {
-                const subjects = Array.from(document.getElementById('s-subjects').selectedOptions).map(o => o.value);
-                return {
+                const data = {
                     name: document.getElementById('s-name').value,
-                    subjects: subjects,
-                    fee: document.getElementById('s-fee').value,
-                    parent: document.getElementById('g-name').value
-                }
+                    subjects: Array.from(document.getElementById('s-subjects').selectedOptions).map(o => o.value),
+                    fee: document.getElementById('s-fee').value, phone: document.getElementById('s-phone').value, area: document.getElementById('s-area').value,
+                    parentName: document.getElementById('g-name').value, parentRel: document.getElementById('g-rel').value, parentPhone: document.getElementById('g-phone').value
+                };
+                if (!data.name || !data.fee || !data.parentName) { Swal.showValidationMessage(`Fadlan buuxi magaca, lacagta, iyo magaca masuulka.`); return false; }
+                return data;
             }
         }).then(result => {
             if (result.isConfirmed) {
-                Swal.fire('Guul!', 'Ardayga waa la keydiyey', 'success');
+                Swal.showLoading();
+                google.script.run.withSuccessHandler(res => {
+                    Swal.fire('Guul!', res.message, 'success');
+                    fetchAndDisplayStudents();
+                }).registerStudent(result.value);
             }
         });
     }
-
-    // --- TEACHER MANAGEMENT ---
     function renderTeachers(view) {
         view.innerHTML = `
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-2xl font-black">Maamulka Macallimiinta</h2>
-                <button onclick="showTeacherForm()" class="bg-orange-500 text-white px-6 py-2 rounded-xl font-bold shadow-lg shadow-orange-200">
-                    + Diiwaangeli Macallin
-                </button>
-            </div>
-            `;
+            <div class="flex justify-between items-center mb-8"><h2 class="text-2xl font-black">Maamulka Macallimiinta</h2><button onclick="showTeacherForm()" class="bg-orange-500 text-white px-6 py-2 rounded-xl font-bold shadow-lg shadow-orange-200">+ Diiwaangeli Macallin</button></div>
+            <div class="bg-white rounded-2xl shadow-sm"><table class="w-full text-left"><thead class="bg-slate-50 text-slate-400 text-[10px] uppercase"><tr><th class="p-5">ID</th><th class="p-5">Macallinka</th><th class="p-5">Maadooyinka</th></tr></thead><tbody id="teacher-list"></tbody></table></div>`;
+        fetchAndDisplayTeachers();
     }
-
+    function fetchAndDisplayTeachers() {
+        google.script.run.withSuccessHandler(teachers => {
+            State.teachers = teachers;
+            const list = document.getElementById('teacher-list');
+            if(!teachers || teachers.length === 0){ list.innerHTML = '<tr><td colspan="3" class="p-5 text-center">Wali wax macallin ah lama diiwaan gelin.</td></tr>'; return; }
+            list.innerHTML = teachers.map(t => `<tr><td class="p-5 font-bold">${t.id}</td><td class="p-5">${t.name}</td><td class="p-5 text-sm">${t.subjects.join(', ')}</td></tr>`).join('');
+        }).getTeachers();
+    }
     function showTeacherForm() {
         Swal.fire({
-            title: 'Diiwaangeli Macallin',
-            html: `
-                <div class="text-left p-4 space-y-4">
-                    <input id="t-name" class="form-input" placeholder="Magaca Macallinka">
-                    <select id="t-subjects" class="form-input" multiple>
-                        ${State.subjects.map(s => `<option value="${s}">${s}</option>`).join('')}
-                    </select>
-                </div>
-            `
+            title: 'Diiwaangeli Macallin', confirmButtonColor: '#f97316',
+            html: `<div class="text-left p-4 space-y-4"><input id="t-name" class="form-input" placeholder="Magaca Macallinka"><select id="t-subjects" class="form-input" multiple size="4">${State.subjects.map(s => `<option value="${s}">${s}</option>`).join('')}</select></div>`,
+            showCancelButton: true, confirmButtonText: 'Diiwaangeli',
+            preConfirm: () => {
+                const data = { name: document.getElementById('t-name').value, subjects: Array.from(document.getElementById('t-subjects').selectedOptions).map(o => o.value) };
+                if (!data.name || data.subjects.length === 0) { Swal.showValidationMessage(`Fadlan buuxi magaca iyo maadooyinka.`); return false; }
+                return data;
+            }
+        }).then(result => {
+            if (result.isConfirmed) {
+                Swal.showLoading();
+                google.script.run.withSuccessHandler(res => {
+                    Swal.fire('Guul!', res.message, 'success');
+                    fetchAndDisplayTeachers();
+                }).registerTeacher(result.value);
+            }
         });
     }
-
-    // --- PAYMENT & INVOICE ---
     function renderFees(view) {
         view.innerHTML = `
-            <div class="max-w-4xl mx-auto bg-white p-10 rounded-3xl shadow-sm border border-slate-100">
-                <h2 class="text-2xl font-black mb-8">Lacag Qabashada (Quick Invoice)</h2>
-                <div class="space-y-6">
-                    <div class="grid grid-cols-2 gap-6">
-                        <div><label class="text-xs font-bold uppercase mb-2 block">Raadi Ardayga</label><input id="p-search" class="form-input" placeholder="Magaca ama ID-ga"></div>
-                        <div><label class="text-xs font-bold uppercase mb-2 block">Bisha</label><select class="form-input"><option>January 2024</option><option>February 2024</option></select></div>
-                    </div>
-                    <div class="p-6 bg-slate-50 rounded-2xl flex justify-between items-center">
-                        <div><p class="text-sm text-slate-500">Total Ardayga looga baahan yahay</p><h1 class="text-4xl font-black text-blue-600">$50.00</h1></div>
-                        <button onclick="generateInvoice('Axmed Cali Faarax', 50, 'January')" class="bg-green-500 text-white px-10 py-4 rounded-2xl font-bold shadow-xl shadow-green-100 hover:scale-105 transition-all">
-                            BIXI LACAGTA & PRINT
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
+            <div class="max-w-4xl mx-auto bg-white p-10 rounded-3xl shadow-sm"><h2 class="text-2xl font-black mb-8">Lacag Qabashada</h2><div class="space-y-6">
+                <div class="grid grid-cols-2 gap-6">
+                    <div><label class="text-xs font-bold uppercase mb-2 block">Raadi Ardayga</label><input id="p-search" onkeyup="searchStudentForFee()" class="form-input" placeholder="Qor magaca ardayga..."><div id="student-search-results" class="bg-white border mt-1 rounded-lg shadow-lg"></div></div>
+                    <div><label class="text-xs font-bold uppercase mb-2 block">Bisha</label><select id="fee-month" class="form-input">${['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map(m => `<option>${m} 2024</option>`).join('')}</select></div>
+                </div><div id="payment-details" class="p-6 bg-slate-50 rounded-2xl hidden items-center justify-between"></div></div></div>`;
+        if (State.students.length === 0) { google.script.run.withSuccessHandler(s => State.students = s).getStudents(); }
     }
-
-    function generateInvoice(name, amount, month) {
-        const modal = document.getElementById('invoice-modal');
+    function searchStudentForFee() {
+        const query = document.getElementById('p-search').value.toLowerCase();
+        const resultsContainer = document.getElementById('student-search-results');
+        if (query.length < 2) { resultsContainer.innerHTML = ''; return; }
+        const filtered = State.students.filter(s => s.name.toLowerCase().includes(query));
+        resultsContainer.innerHTML = filtered.map(s => `<div class="p-3 hover:bg-blue-100 cursor-pointer" onclick="selectStudentForFee('${s.id}')">${s.name} (#${s.id})</div>`).join('');
+    }
+    function selectStudentForFee(studentId) {
+        document.getElementById('student-search-results').innerHTML = '';
+        const student = State.students.find(s => s.id === studentId);
+        if (!student) return;
+        document.getElementById('p-search').value = student.name;
+        const details = document.getElementById('payment-details');
+        details.innerHTML = `<div><p class="text-sm">Total Ardayga looga baahan yahay</p><h1 class="text-4xl font-black text-blue-600">$${student.fee}</h1></div><button onclick="processAndGenerateInvoice('${student.id}', '${student.name}', ${student.fee})" class="bg-green-500 text-white px-10 py-4 rounded-2xl font-bold shadow-xl shadow-green-100">BIXI LACAGTA & PRINT</button>`;
+        details.classList.remove('hidden'); details.classList.add('flex');
+    }
+    function processAndGenerateInvoice(studentId, name, amount) {
+        const month = document.getElementById('fee-month').value;
+        Swal.showLoading();
+        google.script.run.withSuccessHandler(res => {
+            if (res.success) { Swal.close(); generateInvoice(name, amount, month, res.invoiceNumber); } 
+            else { Swal.fire("Error", res.message, 'error'); }
+        }).recordFeePayment({ studentId, studentName: name, amount, month });
+    }
+    function generateInvoice(name, amount, month, invNo) {
         const content = document.getElementById('invoice-content');
-        const invNo = Math.floor(Math.random() * 10000);
-        
         content.innerHTML = `
-            <div class="text-center mb-10 border-b pb-6">
-                <h1 class="text-3xl font-black text-blue-600 tracking-tighter">ELITE SCHOOL SYSTEM</h1>
-                <p class="text-slate-400">Degmada Hodan, Muqdisho, Somalia | Tel: 615000000</p>
-            </div>
-            <div class="flex justify-between mb-10">
-                <div><p class="text-xs font-bold text-slate-400 uppercase">Ku socota</p><h4 class="text-xl font-bold">${name}</h4><p class="text-sm text-slate-500">Student ID: #ST-${invNo}</p></div>
-                <div class="text-right">
-                    <p class="text-xs font-bold text-slate-400 uppercase">Invoice No</p><h4 class="text-xl font-bold">INV-${invNo}</h4>
-                    <p class="text-xs font-bold text-slate-400 uppercase mt-2">Date</p><h4 class="font-bold">${new Date().toLocaleDateString()}</h4>
-                </div>
-            </div>
-            <table class="w-full mb-10">
-                <thead class="bg-slate-50"><tr class="text-left"><th class="p-3">Description</th><th class="p-3 text-right">Amount</th></tr></thead>
-                <tbody><tr class="border-b"><td class="p-3 font-medium text-slate-700">School Monthly Fee - ${month}</td><td class="p-3 text-right font-bold">$${amount}.00</td></tr></tbody>
-            </table>
-            <div class="flex justify-between items-center p-6 bg-blue-600 rounded-2xl text-white">
-                <h3 class="font-bold text-lg uppercase">Total Paid</h3>
-                <h1 class="text-3xl font-black">$${amount}.00</h1>
-            </div>
-            <p class="text-center text-[10px] text-slate-400 mt-10 italic">Mahadsanid! Lacagtaan dib looma soo celin karo.</p>
-        `;
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
+            <div class="text-center mb-10 border-b pb-6"><h1 class="text-3xl font-black text-blue-600">ELITE SCHOOL</h1><p>Muqdisho, Somalia | Tel: 615000000</p></div>
+            <div class="flex justify-between mb-10"><div><p class="text-xs font-bold text-slate-400">KU SOCOTA</p><h4 class="text-xl font-bold">${name}</h4></div><div class="text-right"><p class="text-xs font-bold">Invoice No</p><h4 class="text-xl font-bold">${invNo}</h4><p class="text-xs font-bold mt-2">Date</p><h4 class="font-bold">${new Date().toLocaleDateString()}</h4></div></div>
+            <table class="w-full mb-10"><thead class="bg-slate-50"><tr><th class="p-3 text-left">Description</th><th class="p-3 text-right">Amount</th></tr></thead><tbody><tr><td class="p-3">School Fee - ${month}</td><td class="p-3 text-right font-bold">$${amount}.00</td></tr></tbody></table>
+            <div class="flex justify-between items-center p-6 bg-blue-600 rounded-2xl text-white"><h3 class="font-bold">Total Paid</h3><h1 class="text-3xl font-black">$${amount}.00</h1></div>`;
+        document.getElementById('invoice-modal').classList.remove('hidden');
+        document.getElementById('invoice-modal').classList.add('flex');
     }
-
-    function toggleInvoice() {
-        document.getElementById('invoice-modal').classList.add('hidden');
+    function toggleInvoice() { document.getElementById('invoice-modal').classList.add('hidden'); }
+    function printInvoice() {
+        const content = document.getElementById('invoice-content').innerHTML;
+        const original = document.body.innerHTML;
+        document.body.innerHTML = content;
+        window.print();
+        document.body.innerHTML = original;
+        location.reload();
     }
-
-    // --- INIT ---
-    document.getElementById('current-date').innerText = new Date().toDateString();
-    router.navigate('dashboard');
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('current-date').innerText = new Date().toDateString();
+      router.navigate('dashboard');
+    });
 </script>
 </body>
 </html>
