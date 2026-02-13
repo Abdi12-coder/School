@@ -3,280 +3,2115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite School ERP | Professional Version</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>School Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .active-link { background: #eff6ff; color: #2563eb; border-right: 4px solid #2563eb; }
-        .glass { backdrop-filter: blur(16px); background: rgba(255, 255, 255, 0.8); }
-        .form-input { width: 100%; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; outline: none; transition: 0.3s; }
-        .form-input:focus { border-color: #3b82f6; ring: 2px; ring-color: #bfdbfe; }
-        .loader { border: 5px solid #f3f3f3; border-radius: 50%; border-top: 5px solid #3498db; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 5rem auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* ============================================
+           CSS STYLES - EMBEDDED
+           ============================================ */
+        
+        /* CSS Variables */
+        :root {
+            --primary-color: #4F46E5;
+            --primary-dark: #4338CA;
+            --secondary-color: #10B981;
+            --danger-color: #EF4444;
+            --warning-color: #F59E0B;
+            --bg-color: #F9FAFB;
+            --card-bg: #FFFFFF;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --border-color: #E5E7EB;
+            --sidebar-width: 260px;
+            --header-height: 70px;
+        }
+
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--card-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 20px 0;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 20px 30px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar .logo i {
+            font-size: 32px;
+            color: var(--primary-color);
+        }
+
+        .sidebar .logo h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .nav-menu {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin: 4px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-color);
+            color: var(--primary-color);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .nav-item i {
+            font-size: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            height: var(--header-height);
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            z-index: 100;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            color: var(--text-secondary);
+        }
+
+        .search-box input {
+            padding: 10px 15px 10px 45px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            width: 300px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+        }
+
+        /* Page Container */
+        .page {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .stat-info h3 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-info p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+
+        .dashboard-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-card h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        /* Table Card */
+        .table-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .filter-select {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--bg-color);
+        }
+
+        th {
+            padding: 15px 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: var(--bg-color);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg-color);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+        }
+
+        .btn-success {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        /* Classes Grid */
+        .classes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .class-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .class-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .class-card h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+
+        .class-card .class-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .class-card .class-info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .class-card .class-info-item i {
+            width: 20px;
+            color: var(--primary-color);
+        }
+
+        /* Reports Grid */
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .report-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+        }
+
+        .report-card i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .report-card:hover i {
+            color: white;
+        }
+
+        .report-card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .report-card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .report-card:hover p {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .close-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            background: var(--bg-color);
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+        }
+
+        .close-btn:hover {
+            background: var(--danger-color);
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        .modal-content form {
+            padding: 30px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 20px 30px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-overlay p {
+            color: white;
+            font-size: 16px;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: -100px;
+            right: 30px;
+            background: var(--secondary-color);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: bottom 0.3s ease;
+            z-index: 3000;
+        }
+
+        .toast.show {
+            bottom: 30px;
+        }
+
+        .toast i {
+            font-size: 20px;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .badge-warning {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .badge-danger {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .search-box input {
+                width: 200px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .user-info span {
+                display: none;
+            }
+
+            .search-box {
+                display: none;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
     </style>
 </head>
-<body class="bg-[#f8fafc] text-slate-800 overflow-hidden">
-
-<div class="flex h-screen">
-    <aside class="w-72 bg-white border-r border-slate-200 flex flex-col z-50">
-        <div class="p-8 border-b">
-            <div class="flex items-center gap-3">
-                <div class="p-2 bg-blue-600 rounded-lg text-white"><i class="fas fa-university fa-lg"></i></div>
-                <h1 class="text-xl font-bold tracking-tight text-blue-900">ELITE-SCHOOL</h1>
-            </div>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <i class="fas fa-graduation-cap"></i>
+            <h2>Dugsiga</h2>
         </div>
-        <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
-            <button onclick="router.navigate('dashboard')" class="nav-btn w-full flex items-center p-3 rounded-xl transition-all hover:bg-slate-50">
-                <i class="fas fa-chart-pie w-8"></i> Dashboard
-            </button>
-            <button onclick="router.navigate('students')" class="nav-btn w-full flex items-center p-3 rounded-xl transition-all hover:bg-slate-50">
-                <i class="fas fa-user-graduate w-8"></i> Ardayda
-            </button>
-            <button onclick="router.navigate('teachers')" class="nav-btn w-full flex items-center p-3 rounded-xl transition-all hover:bg-slate-50">
-                <i class="fas fa-chalkboard-teacher w-8"></i> Macallimiinta
-            </button>
-            <button onclick="router.navigate('fees')" class="nav-btn w-full flex items-center p-3 rounded-xl transition-all hover:bg-slate-50">
-                <i class="fas fa-receipt w-8"></i> Lacagaha & Invoice
-            </button>
+        <nav class="nav-menu">
+            <a class="nav-item active" data-page="dashboard">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+            <a class="nav-item" data-page="students">
+                <i class="fas fa-user-graduate"></i>
+                <span>Ardayda</span>
+            </a>
+            <a class="nav-item" data-page="teachers">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>Macallimiinta</span>
+            </a>
+            <a class="nav-item" data-page="classes">
+                <i class="fas fa-door-open"></i>
+                <span>Fasallada</span>
+            </a>
+            <a class="nav-item" data-page="exams">
+                <i class="fas fa-file-alt"></i>
+                <span>Imtixaannada</span>
+            </a>
+            <a class="nav-item" data-page="fees">
+                <i class="fas fa-money-bill-wave"></i>
+                <span>Lacagaha</span>
+            </a>
+            <a class="nav-item" data-page="reports">
+                <i class="fas fa-chart-bar"></i>
+                <span>Warbixino</span>
+            </a>
         </nav>
-    </aside>
+    </div>
 
-    <main class="flex-1 flex flex-col overflow-hidden">
-        <header class="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 glass sticky top-0">
-            <h2 id="page-title" class="text-xl font-bold">Dashboard</h2>
-            <div class="flex items-center gap-4 text-sm font-medium">
-                <span id="current-date"></span>
-                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">A</div>
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="header-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Raadi...">
+                </div>
+                <div class="user-info">
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=4F46E5&color=fff" alt="User">
+                    <span>Admin</span>
+                </div>
             </div>
         </header>
-        <section id="app-view" class="flex-1 overflow-y-auto p-8 bg-[#f8fafc]"></section>
-    </main>
-</div>
 
-<div id="invoice-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[100]">
-    <div class="bg-white w-full max-w-2xl p-10 rounded-2xl shadow-2xl relative">
-        <button onclick="toggleInvoice()" class="absolute top-5 right-5 text-slate-400 hover:text-red-500"><i class="fas fa-times fa-xl"></i></button>
-        <div id="invoice-content"></div>
-        <div class="mt-8 flex justify-end gap-3">
-            <button onclick="printInvoice()" class="bg-slate-800 text-white px-6 py-2 rounded-lg"><i class="fas fa-print mr-2"></i> Print Invoice</button>
+        <!-- Dashboard Page -->
+        <div class="page active" id="dashboard-page">
+            <div class="page-header">
+                <div>
+                    <h1>Dashboard</h1>
+                    <p>Soo dhawoow School Management System</p>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #EEF2FF;">
+                        <i class="fas fa-user-graduate" style="color: #4F46E5;"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalStudents">0</h3>
+                        <p>Wadarta Ardayda</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #FEF3C7;">
+                        <i class="fas fa-chalkboard-teacher" style="color: #F59E0B;"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalTeachers">0</h3>
+                        <p>Wadarta Macallimiinta</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #D1FAE5;">
+                        <i class="fas fa-door-open" style="color: #10B981;"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalClasses">0</h3>
+                        <p>Wadarta Fasallada</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #FEE2E2;">
+                        <i class="fas fa-money-bill-wave" style="color: #EF4444;"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalFees">$0</h3>
+                        <p>Wadarta Lacagaha</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h3>Ardayda Cusub (Bisha)</h3>
+                    <canvas id="studentsChart" style="height: 250px;"></canvas>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Ardayda Fasal kasta</h3>
+                    <canvas id="classesChart" style="height: 250px;"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Students Page -->
+        <div class="page" id="students-page">
+            <div class="page-header">
+                <h1>Maamulka Ardayda</h1>
+                <button class="btn btn-primary" onclick="openStudentModal()">
+                    <i class="fas fa-plus"></i> Ku Dar Arday Cusub
+                </button>
+            </div>
+
+            <div class="table-card">
+                <div class="table-header">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="studentSearch" placeholder="Raadi arday...">
+                    </div>
+                    <select id="classFilter" class="filter-select">
+                        <option value="">Dhammaan Fasallada</option>
+                    </select>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Magaca</th>
+                                <th>Fasalka</th>
+                                <th>Telefoonka</th>
+                                <th>Email</th>
+                                <th>Taariikhda</th>
+                                <th>Ficilada</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTableBody">
+                            <tr>
+                                <td colspan="7" class="text-center">Ma jiro xog. Google Sheets xiriir!</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teachers Page -->
+        <div class="page" id="teachers-page">
+            <div class="page-header">
+                <h1>Maamulka Macallimiinta</h1>
+                <button class="btn btn-primary" onclick="openTeacherModal()">
+                    <i class="fas fa-plus"></i> Ku Dar Macallin Cusub
+                </button>
+            </div>
+
+            <div class="table-card">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Magaca</th>
+                                <th>Maadada</th>
+                                <th>Telefoonka</th>
+                                <th>Email</th>
+                                <th>Mushaharka</th>
+                                <th>Ficilada</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teachersTableBody">
+                            <tr>
+                                <td colspan="7" class="text-center">Ma jiro xog. Google Sheets xiriir!</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Classes Page -->
+        <div class="page" id="classes-page">
+            <div class="page-header">
+                <h1>Maamulka Fasallada</h1>
+                <button class="btn btn-primary" onclick="openClassModal()">
+                    <i class="fas fa-plus"></i> Ku Dar Fasal Cusub
+                </button>
+            </div>
+
+            <div class="classes-grid" id="classesGrid">
+                <p class="text-center">Ma jiro xog. Google Sheets xiriir!</p>
+            </div>
+        </div>
+
+        <!-- Exams Page -->
+        <div class="page" id="exams-page">
+            <div class="page-header">
+                <h1>Maamulka Imtixaannada</h1>
+                <button class="btn btn-primary" onclick="openExamModal()">
+                    <i class="fas fa-plus"></i> Ku Dar Imtixaan Cusub
+                </button>
+            </div>
+
+            <div class="table-card">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Imtixaanka</th>
+                                <th>Fasalka</th>
+                                <th>Maadada</th>
+                                <th>Taariikhda</th>
+                                <th>Waqtiga</th>
+                                <th>Dhibcaha</th>
+                                <th>Ficilada</th>
+                            </tr>
+                        </thead>
+                        <tbody id="examsTableBody">
+                            <tr>
+                                <td colspan="7" class="text-center">Ma jiro xog. Google Sheets xiriir!</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fees Page -->
+        <div class="page" id="fees-page">
+            <div class="page-header">
+                <h1>Maamulka Lacagaha</h1>
+                <button class="btn btn-primary" onclick="openFeeModal()">
+                    <i class="fas fa-plus"></i> Bixin Cusub
+                </button>
+            </div>
+
+            <div class="table-card">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ardayga</th>
+                                <th>Fasalka</th>
+                                <th>Qaddarka</th>
+                                <th>La Bixiyay</th>
+                                <th>Hadhay</th>
+                                <th>Taariikhda</th>
+                                <th>Xaalada</th>
+                                <th>Ficilada</th>
+                            </tr>
+                        </thead>
+                        <tbody id="feesTableBody">
+                            <tr>
+                                <td colspan="8" class="text-center">Ma jiro xog. Google Sheets xiriir!</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Page -->
+        <div class="page" id="reports-page">
+            <div class="page-header">
+                <h1>Warbixino</h1>
+            </div>
+
+            <div class="reports-grid">
+                <div class="report-card" onclick="generateStudentReport()">
+                    <i class="fas fa-users"></i>
+                    <h3>Warbixinta Ardayda</h3>
+                    <p>Soo saari warbixin dhamaystiran oo ardayda</p>
+                </div>
+                <div class="report-card" onclick="generateAttendanceReport()">
+                    <i class="fas fa-calendar-check"></i>
+                    <h3>Warbixinta Soo Marid</h3>
+                    <p>Soo saari warbixin soo maridka</p>
+                </div>
+                <div class="report-card" onclick="generateExamReport()">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Warbixinta Imtixaannada</h3>
+                    <p>Soo saari natiijada imtixaannada</p>
+                </div>
+                <div class="report-card" onclick="generateFeeReport()">
+                    <i class="fas fa-money-check"></i>
+                    <h3>Warbixinta Lacagaha</h3>
+                    <p>Soo saari warbixin dhaqaalaha</p>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    // --- FUNCTION-KA QALAD MUUJINTA (Error Handler) ---
-    function onFailure(error) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Qalad Ayaa Dhacay!',
-            text: error.message,
+    <!-- Student Modal -->
+    <div class="modal" id="studentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="studentModalTitle">Ku Dar Arday Cusub</h2>
+                <button class="close-btn" onclick="closeModal('studentModal')">&times;</button>
+            </div>
+            <form id="studentForm">
+                <input type="hidden" id="studentId">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Magaca Oo Dhan *</label>
+                        <input type="text" id="studentName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Fasalka *</label>
+                        <select id="studentClass" required>
+                            <option value="">Dooro Fasal...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Taariikhda Dhalashada *</label>
+                        <input type="date" id="studentDOB" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Jinsiga *</label>
+                        <select id="studentGender" required>
+                            <option value="">Dooro...</option>
+                            <option value="Lab">Lab</option>
+                            <option value="Dhedig">Dhedig</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Telefoonka Waalid *</label>
+                        <input type="tel" id="studentPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="studentEmail">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Cinwaanka</label>
+                        <textarea id="studentAddress" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('studentModal')">Ka Noqo</button>
+                    <button type="submit" class="btn btn-primary">Kaydi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Teacher Modal -->
+    <div class="modal" id="teacherModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Ku Dar Macallin Cusub</h2>
+                <button class="close-btn" onclick="closeModal('teacherModal')">&times;</button>
+            </div>
+            <form id="teacherForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Magaca Oo Dhan *</label>
+                        <input type="text" id="teacherName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Maadada Wax Ka Barta *</label>
+                        <input type="text" id="teacherSubject" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Telefoonka *</label>
+                        <input type="tel" id="teacherPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="teacherEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mushaharka *</label>
+                        <input type="number" id="teacherSalary" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Taariikhda Shaqada</label>
+                        <input type="date" id="teacherJoinDate">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Cinwaanka</label>
+                        <textarea id="teacherAddress" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('teacherModal')">Ka Noqo</button>
+                    <button type="submit" class="btn btn-primary">Kaydi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Class Modal -->
+    <div class="modal" id="classModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Ku Dar Fasal Cusub</h2>
+                <button class="close-btn" onclick="closeModal('classModal')">&times;</button>
+            </div>
+            <form id="classForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Magaca Fasalka *</label>
+                        <input type="text" id="className" required placeholder="Tusaale: Fasal 1-A">
+                    </div>
+                    <div class="form-group">
+                        <label>Macallinka *</label>
+                        <select id="classTeacher" required>
+                            <option value="">Dooro Macallin...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tirada Ardayda Ugu Badan</label>
+                        <input type="number" id="classCapacity" value="30">
+                    </div>
+                    <div class="form-group">
+                        <label>Qolka</label>
+                        <input type="text" id="classRoom" placeholder="Tusaale: Qol 101">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('classModal')">Ka Noqo</button>
+                    <button type="submit" class="btn btn-primary">Kaydi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Exam Modal -->
+    <div class="modal" id="examModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Ku Dar Imtixaan Cusub</h2>
+                <button class="close-btn" onclick="closeModal('examModal')">&times;</button>
+            </div>
+            <form id="examForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Magaca Imtixaanka *</label>
+                        <input type="text" id="examName" required placeholder="Tusaale: Mid-Term">
+                    </div>
+                    <div class="form-group">
+                        <label>Fasalka *</label>
+                        <select id="examClass" required>
+                            <option value="">Dooro Fasal...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Maadada *</label>
+                        <input type="text" id="examSubject" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Taariikhda *</label>
+                        <input type="date" id="examDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Waqtiga Bilowga</label>
+                        <input type="time" id="examTime">
+                    </div>
+                    <div class="form-group">
+                        <label>Dhibcaha (Ugu Badan)</label>
+                        <input type="number" id="examMarks" value="100">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('examModal')">Ka Noqo</button>
+                    <button type="submit" class="btn btn-primary">Kaydi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Fee Modal -->
+    <div class="modal" id="feeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Bixin Lacag</h2>
+                <button class="close-btn" onclick="closeModal('feeModal')">&times;</button>
+            </div>
+            <form id="feeForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Ardayga *</label>
+                        <select id="feeStudent" required>
+                            <option value="">Dooro Arday...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Qaddarka Guud *</label>
+                        <input type="number" id="feeAmount" required>
+                    </div>
+                    <div class="form-group">
+                        <label>La Bixiyay *</label>
+                        <input type="number" id="feePaid" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Taariikhda *</label>
+                        <input type="date" id="feeDate" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Faahfaahin</label>
+                        <textarea id="feeNotes" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('feeModal')">Ka Noqo</button>
+                    <button type="submit" class="btn btn-primary">Kaydi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p>Fadlan sug...</p>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage"></span>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // ============================================
+        // JAVASCRIPT CODE - EMBEDDED
+        // ============================================
+        
+        // IMPORTANT: Replace with your Google Apps Script Web App URL
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyTSZTsxAwUVe6Sn5YyY9AzSvmS794JhMGjX_o1UvgHU2hNAjSLKtDk0Xs82UqXEWbt/exec';
+
+        // Global Variables
+        let studentsData = [];
+        let teachersData = [];
+        let classesData = [];
+        let examsData = [];
+        let feesData = [];
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            setupEventListeners();
+            
+            // Check if Google Apps Script URL is set
+            if (SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+                showToast('MUHIIM: Beddel SCRIPT_URL Google Apps Script URL-kaaga!', 'error');
+            } else {
+                loadAllData();
+            }
         });
-    }
 
-    function showLoader() { document.getElementById('app-view').innerHTML = '<div class="loader"></div>'; }
-    
-    // State management
-    const State = { 
-        activePage: 'dashboard', 
-        subjects: ['Xisaab', 'Af-Soomaali', 'English', 'Biology', 'Chemistry', 'Physics', 'Taariikh', 'Juqraafi'], 
-        students: [], 
-        teachers: [] 
-    };
-
-    // Router
-    const router = {
-        navigate: function(page) {
-            State.activePage = page;
-            document.getElementById('page-title').innerText = page.charAt(0).toUpperCase() + page.slice(1);
-            document.querySelectorAll('.nav-btn').forEach(b => {
-                 b.classList.remove('active-link');
-                 if(b.innerText.toLowerCase().includes(page)) b.classList.add('active-link');
+        function initializeApp() {
+            const today = new Date().toISOString().split('T')[0];
+            document.querySelectorAll('input[type="date"]').forEach(input => {
+                if (!input.value) input.value = today;
             });
-            this.render();
-        },
-        render: function() {
-            const view = document.getElementById('app-view'); showLoader();
-            if (State.activePage === 'dashboard') renderDashboard(view);
-            if (State.activePage === 'students') renderStudents(view);
-            if (State.activePage === 'teachers') renderTeachers(view);
-            if (State.activePage === 'fees') renderFees(view);
         }
-    };
 
-    // --- RENDER FUNCTIONS ---
-    function renderDashboard(view) {
-        view.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10"><div class="bg-white p-6 rounded-2xl shadow-sm"><p class="text-slate-400 text-sm">Ardayda Guud</p><h3 id="total-students" class="text-3xl font-black text-blue-600">...</h3></div><div class="bg-white p-6 rounded-2xl shadow-sm"><p class="text-slate-400 text-sm">Macallimiinta</p><h3 id="total-teachers" class="text-3xl font-black text-orange-600">...</h3></div><div class="bg-white p-6 rounded-2xl shadow-sm"><p class="text-slate-400 text-sm">Dakhliga Bisha</p><h3 class="text-3xl font-black text-green-600">$0</h3></div></div><div class="bg-white p-8 rounded-3xl shadow-sm"><canvas id="mainChart" height="100"></canvas></div>`;
-        
-        // Connect to backend
-        google.script.run.withSuccessHandler(s => document.getElementById('total-students').innerText = s.length).withFailureHandler(onFailure).getStudents();
-        google.script.run.withSuccessHandler(t => document.getElementById('total-teachers').innerText = t.length).withFailureHandler(onFailure).getTeachers();
-        
-        // Chart
-        new Chart(document.getElementById('mainChart').getContext('2d'), { type: 'bar', data: { labels: ['Jan', 'Feb', 'Mar', 'Apr'], datasets: [{ label: 'Revenue', data: [500, 800, 1200, 900], backgroundColor: '#3b82f6' }] } });
-    }
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
 
-    function renderStudents(view) {
-        view.innerHTML = `<div class="flex justify-between items-center mb-8"><h2 class="text-2xl font-black">Maamulka Ardayda</h2><button onclick="showStudentForm()" class="bg-blue-600 text-white px-6 py-2 rounded-xl font-bold shadow-lg shadow-blue-200">+ Diiwaangeli Arday</button></div><div class="bg-white rounded-2xl shadow-sm overflow-hidden"><table class="w-full text-left"><thead class="bg-slate-50 text-slate-400 text-[10px] uppercase font-bold tracking-widest border-b"><tr><th class="p-5">ID</th><th class="p-5">Ardayga</th><th class="p-5">Maadooyinka</th><th class="p-5">Masuulka</th><th class="p-5">Lacagta</th></tr></thead><tbody id="student-list" class="divide-y"></tbody></table></div>`;
-        fetchAndDisplayStudents();
-    }
+        function setupEventListeners() {
+            // Navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const page = this.dataset.page;
+                    switchPage(page);
+                });
+            });
 
-    function fetchAndDisplayStudents(){
-        google.script.run.withSuccessHandler(students => {
-            State.students = students;
-            const list = document.getElementById('student-list');
-            if(!list) return;
-            if(!students || students.length === 0){ list.innerHTML = '<tr><td colspan="5" class="p-5 text-center text-slate-400">Wali wax arday ah lama diiwaan gelin.</td></tr>'; return; }
-            list.innerHTML = students.map(s => `<tr><td class="p-5 font-bold">${s.id}</td><td class="p-5">${s.name}</td><td class="p-5 text-sm">${s.subjects.join(', ')}</td><td class="p-5 text-sm">${s.guardian}</td><td class="p-5 font-bold text-green-500">$${s.fee}</td></tr>`).join('');
-        }).withFailureHandler(onFailure).getStudents();
-    }
+            // Menu toggle for mobile
+            document.getElementById('menuToggle').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('active');
+            });
 
-    function showStudentForm() {
-        Swal.fire({
-            title: '<span class="text-2xl font-bold text-blue-600">Diiwaangelinta Arday Cusub</span>', width: '900px',
-            html: `<div class="grid grid-cols-2 gap-4 text-left p-4"><div class="col-span-2"><label class="text-xs font-bold">Magaca oo Seddexan</label><input id="s-name" class="form-input" placeholder="Tusaale: Axmed Cali Faarax"></div><div><label class="text-xs font-bold">Maadooyinka</label><select id="s-subjects" class="form-input" multiple size="4">${State.subjects.map(s => `<option value="${s}">${s}</option>`).join('')}</select></div><div><label class="text-xs font-bold">Lacagta Bisha ($)</label><input id="s-fee" type="number" class="form-input" placeholder="50"></div><div><label class="text-xs font-bold">Taleefanka Ardayga</label><input id="s-phone" class="form-input" placeholder="61XXXXXXX"></div><div><label class="text-xs font-bold">Xaafadda</label><input id="s-area" class="form-input" placeholder="Hodan"></div><div class="col-span-2 border-t pt-4 mt-2"><h4 class="font-bold text-blue-500">Xogta Masuulka</h4></div><div><label class="text-xs font-bold">Magaca Masuulka</label><input id="g-name" class="form-input"></div><div><label class="text-xs font-bold">Xiriirka (Aabe, Hooyo..)</label><input id="g-rel" class="form-input"></div><div class="col-span-2"><label class="text-xs font-bold">Taleefanka Masuulka</label><input id="g-phone" class="form-input"></div></div>`,
-            showCancelButton: true, confirmButtonText: 'Diiwaangeli', confirmButtonColor: '#2563eb',
-            preConfirm: () => {
-                const data = { 
-                    name: document.getElementById('s-name').value, 
-                    subjects: Array.from(document.getElementById('s-subjects').selectedOptions).map(o => o.value), 
-                    fee: document.getElementById('s-fee').value, 
-                    phone: document.getElementById('s-phone').value, 
-                    area: document.getElementById('s-area').value, 
-                    parentName: document.getElementById('g-name').value, 
-                    parentRel: document.getElementById('g-rel').value, 
-                    parentPhone: document.getElementById('g-phone').value 
-                };
-                if (!data.name || !data.fee || !data.parentName) { Swal.showValidationMessage(`Fadlan buuxi magaca ardayga, lacagta, iyo magaca masuulka.`); return false; }
-                return data;
+            // Forms
+            document.getElementById('studentForm').addEventListener('submit', handleStudentSubmit);
+            document.getElementById('teacherForm').addEventListener('submit', handleTeacherSubmit);
+            document.getElementById('classForm').addEventListener('submit', handleClassSubmit);
+            document.getElementById('examForm').addEventListener('submit', handleExamSubmit);
+            document.getElementById('feeForm').addEventListener('submit', handleFeeSubmit);
+
+            // Search
+            document.getElementById('studentSearch').addEventListener('input', filterStudents);
+            document.getElementById('classFilter').addEventListener('change', filterStudents);
+        }
+
+        // ============================================
+        // PAGE NAVIGATION
+        // ============================================
+
+        function switchPage(pageName) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-page="${pageName}"]`).classList.add('active');
+
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(`${pageName}-page`).classList.add('active');
+
+            switch(pageName) {
+                case 'dashboard':
+                    loadDashboardData();
+                    break;
+                case 'students':
+                    loadStudentsTable();
+                    break;
+                case 'teachers':
+                    loadTeachersTable();
+                    break;
+                case 'classes':
+                    loadClassesGrid();
+                    break;
+                case 'exams':
+                    loadExamsTable();
+                    break;
+                case 'fees':
+                    loadFeesTable();
+                    break;
             }
-        }).then(result => {
-            if (result.isConfirmed) {
-                Swal.showLoading();
-                google.script.run.withSuccessHandler(res => {
-                    if (res.success) {
-                        Swal.fire('Guul!', res.message, 'success');
-                        fetchAndDisplayStudents();
-                    } else {
-                        Swal.fire('Qalad!', res.message, 'error');
+        }
+
+        // ============================================
+        // GOOGLE SHEETS API FUNCTIONS
+        // ============================================
+
+        async function fetchFromSheet(action, data = {}) {
+            if (SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+                showToast('Fadlan setup Google Apps Script URL-ka!', 'error');
+                return null;
+            }
+
+            showLoading();
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=${action}`, {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                hideLoading();
+                return result;
+            } catch (error) {
+                hideLoading();
+                console.error('Error:', error);
+                showToast('Khalad ayaa dhacay. Check Google Apps Script setup!', 'error');
+                return null;
+            }
+        }
+
+        async function loadAllData() {
+            const students = await fetchFromSheet('getStudents');
+            const teachers = await fetchFromSheet('getTeachers');
+            const classes = await fetchFromSheet('getClasses');
+            const exams = await fetchFromSheet('getExams');
+            const fees = await fetchFromSheet('getFees');
+
+            if (students) studentsData = students.data || [];
+            if (teachers) teachersData = teachers.data || [];
+            if (classes) classesData = classes.data || [];
+            if (exams) examsData = exams.data || [];
+            if (fees) feesData = fees.data || [];
+
+            loadDashboardData();
+            populateDropdowns();
+        }
+
+        // ============================================
+        // DASHBOARD
+        // ============================================
+
+        function loadDashboardData() {
+            document.getElementById('totalStudents').textContent = studentsData.length;
+            document.getElementById('totalTeachers').textContent = teachersData.length;
+            document.getElementById('totalClasses').textContent = classesData.length;
+            
+            const totalFees = feesData.reduce((sum, fee) => sum + (parseFloat(fee.paid) || 0), 0);
+            document.getElementById('totalFees').textContent = `$${totalFees.toFixed(2)}`;
+
+            loadCharts();
+        }
+
+        function loadCharts() {
+            // Simple placeholder charts
+            const studentsCtx = document.getElementById('studentsChart');
+            const classesCtx = document.getElementById('classesChart');
+            
+            if (studentsCtx && typeof Chart !== 'undefined') {
+                new Chart(studentsCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [{
+                            label: 'Ardayda',
+                            data: [10, 15, 20, 18, 25, 30],
+                            borderColor: '#4F46E5',
+                            backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
                     }
-                }).withFailureHandler(onFailure).registerStudent(result.value);
+                });
+
+                new Chart(classesCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Class 1', 'Class 2', 'Class 3', 'Class 4'],
+                        datasets: [{
+                            label: 'Ardayda',
+                            data: [25, 30, 20, 28],
+                            backgroundColor: '#4F46E5'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
             }
-        });
-    }
+        }
 
-    // --- TEACHERS & FEES FUNCTIONS ---
-    function renderTeachers(view){
-        view.innerHTML=`<div class="flex justify-between items-center mb-8"><h2 class="text-2xl font-black">Maamulka Macallimiinta</h2><button onclick="showTeacherForm()" class="bg-orange-500 text-white px-6 py-2 rounded-xl font-bold shadow-lg shadow-orange-200">+ Diiwaangeli Macallin</button></div><div class="bg-white rounded-2xl shadow-sm"><table class="w-full text-left"><thead class="bg-slate-50 text-slate-400 text-[10px] uppercase"><tr><th class="p-5">ID</th><th class="p-5">Macallinka</th><th class="p-5">Maadooyinka</th></tr></thead><tbody id="teacher-list"></tbody></table></div>`;
-        fetchAndDisplayTeachers();
-    }
+        // ============================================
+        // STUDENTS MANAGEMENT
+        // ============================================
 
-    function fetchAndDisplayTeachers(){
-        google.script.run.withSuccessHandler(teachers=>{
-            State.teachers=teachers;
-            const list=document.getElementById('teacher-list');
-            if(!list) return;
-            if(!teachers||teachers.length===0){
-                list.innerHTML='<tr><td colspan="3" class="p-5 text-center text-slate-400">Wali wax macallin ah lama diiwaan gelin.</td></tr>'; 
+        function loadStudentsTable() {
+            const tbody = document.getElementById('studentsTableBody');
+            
+            if (studentsData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center">Arday la ma helin</td></tr>';
                 return;
             }
-            list.innerHTML=teachers.map(t=>`<tr><td class="p-5 font-bold">${t.id}</td><td class="p-5">${t.name}</td><td class="p-5 text-sm">${t.subjects.join(', ')}</td></tr>`).join('');
-        }).withFailureHandler(onFailure).getTeachers();
-    }
 
-    function showTeacherForm(){
-        Swal.fire({
-            title: 'Diiwaangeli Macallin',
-            confirmButtonColor: '#f97316',
-            html: `<div class="text-left p-4 space-y-4"><input id="t-name" class="form-input" placeholder="Magaca Macallinka"><select id="t-subjects" class="form-input" multiple size="4">${State.subjects.map(s=>`<option value="${s}">${s}</option>`).join('')}</select></div>`,
-            showCancelButton: true,
-            confirmButtonText: 'Diiwaangeli',
-            preConfirm: ()=>{
-                const data={
-                    name:document.getElementById('t-name').value,
-                    subjects:Array.from(document.getElementById('t-subjects').selectedOptions).map(o=>o.value)
-                };
-                if(!data.name||data.subjects.length===0){Swal.showValidationMessage(`Fadlan buuxi magaca iyo maadooyinka.`);return false}
-                return data;
-            }
-        }).then(result=>{
-            if (result.isConfirmed) {
-                Swal.showLoading();
-                google.script.run.withSuccessHandler(res=>{
-                    if (res.success) {
-                        Swal.fire('Guul!',res.message,'success');
-                        fetchAndDisplayTeachers();
-                    } else {
-                        Swal.fire('Qalad!',res.message,'error');
-                    }
-                }).withFailureHandler(onFailure).registerTeacher(result.value);
-            }
-        });
-    }
-
-    function renderFees(view){
-        view.innerHTML=`<div class="max-w-4xl mx-auto bg-white p-10 rounded-3xl shadow-sm"><h2 class="text-2xl font-black mb-8">Lacag Qabashada</h2><div class="space-y-6"><div class="grid grid-cols-2 gap-6"><div><label class="text-xs font-bold uppercase mb-2 block">Raadi Ardayga</label><input id="p-search" onkeyup="searchStudentForFee()" class="form-input" placeholder="Qor magaca ardayga..."><div id="student-search-results" class="bg-white border mt-1 rounded-lg shadow-lg z-10 absolute w-1/3"></div></div><div><label class="text-xs font-bold uppercase mb-2 block">Bisha</label><select id="fee-month" class="form-input">${['January','February','March','April','May','June','July','August','September','October','November','December'].map(m=>`<option>${m} ${new Date().getFullYear()}</option>`).join('')}</select></div></div><div id="payment-details" class="p-6 bg-slate-50 rounded-2xl hidden items-center justify-between"></div></div></div>`;
-        if(State.students.length===0){
-            google.script.run.withSuccessHandler(s=>State.students=s).withFailureHandler(onFailure).getStudents();
+            tbody.innerHTML = studentsData.map(student => `
+                <tr>
+                    <td>${student.id}</td>
+                    <td>${student.name}</td>
+                    <td>${student.class}</td>
+                    <td>${student.phone}</td>
+                    <td>${student.email || '-'}</td>
+                    <td>${formatDate(student.date)}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-sm btn-primary" onclick="editStudent('${student.id}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteStudent('${student.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
         }
-    }
 
-    function searchStudentForFee(){
-        const query=document.getElementById('p-search').value.toLowerCase();
-        const resultsContainer=document.getElementById('student-search-results');
-        if(query.length<2){resultsContainer.innerHTML='';return}
-        const filtered=State.students.filter(s=>s.name.toLowerCase().includes(query));
-        resultsContainer.innerHTML=filtered.map(s=>`<div class="p-3 hover:bg-blue-100 cursor-pointer" onclick="selectStudentForFee('${s.id}')">${s.name} (#${s.id})</div>`).join('');
-    }
+        function filterStudents() {
+            const searchTerm = document.getElementById('studentSearch').value.toLowerCase();
+            const classFilter = document.getElementById('classFilter').value;
 
-    function selectStudentForFee(studentId){
-        document.getElementById('student-search-results').innerHTML='';
-        const student=State.students.find(s=>s.id===studentId);
-        if(!student) return;
-        document.getElementById('p-search').value=student.name;
-        const details=document.getElementById('payment-details');
-        details.innerHTML=`<div><p class="text-sm">Total Ardayga looga baahan yahay</p><h1 class="text-4xl font-black text-blue-600">$${student.fee}</h1></div><button onclick="processAndGenerateInvoice('${student.id}','${student.name}',${student.fee})" class="bg-green-500 text-white px-10 py-4 rounded-2xl font-bold shadow-xl shadow-green-100">BIXI LACAGTA & PRINT</button>`;
-        details.classList.remove('hidden');
-        details.classList.add('flex');
-    }
+            const filtered = studentsData.filter(student => {
+                const matchesSearch = student.name.toLowerCase().includes(searchTerm) ||
+                                    student.id.toLowerCase().includes(searchTerm);
+                const matchesClass = !classFilter || student.class === classFilter;
+                return matchesSearch && matchesClass;
+            });
 
-    function processAndGenerateInvoice(studentId,name,amount){
-        const month=document.getElementById('fee-month').value;
-        Swal.showLoading();
-        google.script.run.withSuccessHandler(res=>{
-            if(res.success){
-                Swal.close();
-                generateInvoice(name,amount,month,res.invoiceNumber);
-            }else{
-                Swal.fire("Error",res.message,'error');
+            const tbody = document.getElementById('studentsTableBody');
+            tbody.innerHTML = filtered.map(student => `
+                <tr>
+                    <td>${student.id}</td>
+                    <td>${student.name}</td>
+                    <td>${student.class}</td>
+                    <td>${student.phone}</td>
+                    <td>${student.email || '-'}</td>
+                    <td>${formatDate(student.date)}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-sm btn-primary" onclick="editStudent('${student.id}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteStudent('${student.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openStudentModal(studentId = null) {
+            const modal = document.getElementById('studentModal');
+            const form = document.getElementById('studentForm');
+            
+            if (studentId) {
+                const student = studentsData.find(s => s.id === studentId);
+                document.getElementById('studentModalTitle').textContent = 'Wax Ka Badal Arday';
+                document.getElementById('studentId').value = student.id;
+                document.getElementById('studentName').value = student.name;
+                document.getElementById('studentClass').value = student.class;
+                document.getElementById('studentDOB').value = student.dob;
+                document.getElementById('studentGender').value = student.gender;
+                document.getElementById('studentPhone').value = student.phone;
+                document.getElementById('studentEmail').value = student.email;
+                document.getElementById('studentAddress').value = student.address;
+            } else {
+                document.getElementById('studentModalTitle').textContent = 'Ku Dar Arday Cusub';
+                form.reset();
+                document.getElementById('studentId').value = '';
             }
-        }).withFailureHandler(onFailure).recordFeePayment({studentId,studentName:name,amount,month});
-    }
+            
+            modal.classList.add('active');
+        }
 
-    function generateInvoice(name,amount,month,invNo){
-        const content=document.getElementById('invoice-content');
-        content.innerHTML=`<div class="text-center mb-10 border-b pb-6"><h1 class="text-3xl font-black text-blue-600">ELITE SCHOOL</h1><p>Muqdisho, Somalia | Tel: 615000000</p></div><div class="flex justify-between mb-10"><div><p class="text-xs font-bold text-slate-400">KU SOCOTA</p><h4 class="text-xl font-bold">${name}</h4></div><div class="text-right"><p class="text-xs font-bold">Invoice No</p><h4 class="text-xl font-bold">${invNo}</h4><p class="text-xs font-bold mt-2">Date</p><h4 class="font-bold">${new Date().toLocaleDateString()}</h4></div></div><table class="w-full mb-10"><thead class="bg-slate-50"><tr><th class="p-3 text-left">Description</th><th class="p-3 text-right">Amount</th></tr></thead><tbody><tr><td class="p-3">School Fee - ${month}</td><td class="p-3 text-right font-bold">$${amount}.00</td></tr></tbody></table><div class="flex justify-between items-center p-6 bg-blue-600 rounded-2xl text-white"><h3 class="font-bold">Total Paid</h3><h1 class="text-3xl font-black">$${amount}.00</h1></div>`;
-        document.getElementById('invoice-modal').classList.remove('hidden');
-        document.getElementById('invoice-modal').classList.add('flex');
-    }
+        async function handleStudentSubmit(e) {
+            e.preventDefault();
+            
+            const studentData = {
+                id: document.getElementById('studentId').value || generateId('STU'),
+                name: document.getElementById('studentName').value,
+                class: document.getElementById('studentClass').value,
+                dob: document.getElementById('studentDOB').value,
+                gender: document.getElementById('studentGender').value,
+                phone: document.getElementById('studentPhone').value,
+                email: document.getElementById('studentEmail').value,
+                address: document.getElementById('studentAddress').value,
+                date: new Date().toISOString()
+            };
 
-    function toggleInvoice(){document.getElementById('invoice-modal').classList.add('hidden');}
+            const action = studentData.id.includes('STU') ? 'addStudent' : 'updateStudent';
+            const result = await fetchFromSheet(action, studentData);
 
-    function printInvoice(){
-        const content=document.getElementById('invoice-content').innerHTML;
-        const original=document.body.innerHTML;
-        document.body.innerHTML=content;
-        window.print();
-        document.body.innerHTML=original;
-        location.reload();
-    }
+            if (result && result.success) {
+                showToast('Arday waa lagu kaydiyay guul ahaan!');
+                closeModal('studentModal');
+                await loadAllData();
+                loadStudentsTable();
+            }
+        }
 
-    // Initialize
-    document.addEventListener('DOMContentLoaded',()=>{
-        document.getElementById('current-date').innerText=new Date().toDateString();
-        router.navigate('dashboard');
-    });
-</script>
+        async function deleteStudent(id) {
+            if (!confirm('Ma hubtaa inaad tirtirto arday-kan?')) return;
+
+            const result = await fetchFromSheet('deleteStudent', { id });
+            if (result && result.success) {
+                showToast('Arday waa la tirtiray!');
+                await loadAllData();
+                loadStudentsTable();
+            }
+        }
+
+        function editStudent(id) {
+            openStudentModal(id);
+        }
+
+        // ============================================
+        // TEACHERS MANAGEMENT
+        // ============================================
+
+        function loadTeachersTable() {
+            const tbody = document.getElementById('teachersTableBody');
+            
+            if (teachersData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center">Macallin la ma helin</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = teachersData.map(teacher => `
+                <tr>
+                    <td>${teacher.id}</td>
+                    <td>${teacher.name}</td>
+                    <td>${teacher.subject}</td>
+                    <td>${teacher.phone}</td>
+                    <td>${teacher.email}</td>
+                    <td>$${teacher.salary}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-sm btn-primary" onclick="editTeacher('${teacher.id}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteTeacher('${teacher.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openTeacherModal(teacherId = null) {
+            const modal = document.getElementById('teacherModal');
+            const form = document.getElementById('teacherForm');
+            
+            if (teacherId) {
+                const teacher = teachersData.find(t => t.id === teacherId);
+                document.getElementById('teacherName').value = teacher.name;
+                document.getElementById('teacherSubject').value = teacher.subject;
+                document.getElementById('teacherPhone').value = teacher.phone;
+                document.getElementById('teacherEmail').value = teacher.email;
+                document.getElementById('teacherSalary').value = teacher.salary;
+                document.getElementById('teacherJoinDate').value = teacher.joinDate;
+                document.getElementById('teacherAddress').value = teacher.address;
+            } else {
+                form.reset();
+            }
+            
+            modal.classList.add('active');
+        }
+
+        async function handleTeacherSubmit(e) {
+            e.preventDefault();
+            
+            const teacherData = {
+                id: generateId('TCH'),
+                name: document.getElementById('teacherName').value,
+                subject: document.getElementById('teacherSubject').value,
+                phone: document.getElementById('teacherPhone').value,
+                email: document.getElementById('teacherEmail').value,
+                salary: document.getElementById('teacherSalary').value,
+                joinDate: document.getElementById('teacherJoinDate').value,
+                address: document.getElementById('teacherAddress').value
+            };
+
+            const result = await fetchFromSheet('addTeacher', teacherData);
+
+            if (result && result.success) {
+                showToast('Macallin waa lagu kaydiyay guul ahaan!');
+                closeModal('teacherModal');
+                await loadAllData();
+                loadTeachersTable();
+            }
+        }
+
+        async function deleteTeacher(id) {
+            if (!confirm('Ma hubtaa inaad tirtirto macallin-kan?')) return;
+
+            const result = await fetchFromSheet('deleteTeacher', { id });
+            if (result && result.success) {
+                showToast('Macallin waa la tirtiray!');
+                await loadAllData();
+                loadTeachersTable();
+            }
+        }
+
+        function editTeacher(id) {
+            openTeacherModal(id);
+        }
+
+        // ============================================
+        // CLASSES MANAGEMENT
+        // ============================================
+
+        function loadClassesGrid() {
+            const grid = document.getElementById('classesGrid');
+            
+            if (classesData.length === 0) {
+                grid.innerHTML = '<p class="text-center">Fasal la ma helin</p>';
+                return;
+            }
+
+            grid.innerHTML = classesData.map(classItem => {
+                const studentCount = studentsData.filter(s => s.class === classItem.name).length;
+                return `
+                    <div class="class-card">
+                        <h3>${classItem.name}</h3>
+                        <div class="class-info">
+                            <div class="class-info-item">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                                <span>${classItem.teacher}</span>
+                            </div>
+                            <div class="class-info-item">
+                                <i class="fas fa-users"></i>
+                                <span>${studentCount}/${classItem.capacity} Arday</span>
+                            </div>
+                            <div class="class-info-item">
+                                <i class="fas fa-door-open"></i>
+                                <span>${classItem.room}</span>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn btn-sm btn-primary" onclick="editClass('${classItem.id}')">
+                                <i class="fas fa-edit"></i> Wax Ka Badal
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteClass('${classItem.id}')">
+                                <i class="fas fa-trash"></i> Tirtir
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openClassModal(classId = null) {
+            const modal = document.getElementById('classModal');
+            const form = document.getElementById('classForm');
+            
+            if (classId) {
+                const classItem = classesData.find(c => c.id === classId);
+                document.getElementById('className').value = classItem.name;
+                document.getElementById('classTeacher').value = classItem.teacher;
+                document.getElementById('classCapacity').value = classItem.capacity;
+                document.getElementById('classRoom').value = classItem.room;
+            } else {
+                form.reset();
+            }
+            
+            modal.classList.add('active');
+        }
+
+        async function handleClassSubmit(e) {
+            e.preventDefault();
+            
+            const classData = {
+                id: generateId('CLS'),
+                name: document.getElementById('className').value,
+                teacher: document.getElementById('classTeacher').value,
+                capacity: document.getElementById('classCapacity').value,
+                room: document.getElementById('classRoom').value
+            };
+
+            const result = await fetchFromSheet('addClass', classData);
+
+            if (result && result.success) {
+                showToast('Fasal waa lagu kaydiyay guul ahaan!');
+                closeModal('classModal');
+                await loadAllData();
+                loadClassesGrid();
+            }
+        }
+
+        async function deleteClass(id) {
+            if (!confirm('Ma hubtaa inaad tirtirto fasal-kan?')) return;
+
+            const result = await fetchFromSheet('deleteClass', { id });
+            if (result && result.success) {
+                showToast('Fasal waa la tirtiray!');
+                await loadAllData();
+                loadClassesGrid();
+            }
+        }
+
+        function editClass(id) {
+            openClassModal(id);
+        }
+
+        // ============================================
+        // EXAMS MANAGEMENT
+        // ============================================
+
+        function loadExamsTable() {
+            const tbody = document.getElementById('examsTableBody');
+            
+            if (examsData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center">Imtixaan la ma helin</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = examsData.map(exam => `
+                <tr>
+                    <td>${exam.name}</td>
+                    <td>${exam.class}</td>
+                    <td>${exam.subject}</td>
+                    <td>${formatDate(exam.date)}</td>
+                    <td>${exam.time}</td>
+                    <td>${exam.marks}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-sm btn-primary" onclick="editExam('${exam.id}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteExam('${exam.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openExamModal(examId = null) {
+            const modal = document.getElementById('examModal');
+            const form = document.getElementById('examForm');
+            
+            if (examId) {
+                const exam = examsData.find(e => e.id === examId);
+                document.getElementById('examName').value = exam.name;
+                document.getElementById('examClass').value = exam.class;
+                document.getElementById('examSubject').value = exam.subject;
+                document.getElementById('examDate').value = exam.date;
+                document.getElementById('examTime').value = exam.time;
+                document.getElementById('examMarks').value = exam.marks;
+            } else {
+                form.reset();
+            }
+            
+            modal.classList.add('active');
+        }
+
+        async function handleExamSubmit(e) {
+            e.preventDefault();
+            
+            const examData = {
+                id: generateId('EXM'),
+                name: document.getElementById('examName').value,
+                class: document.getElementById('examClass').value,
+                subject: document.getElementById('examSubject').value,
+                date: document.getElementById('examDate').value,
+                time: document.getElementById('examTime').value,
+                marks: document.getElementById('examMarks').value
+            };
+
+            const result = await fetchFromSheet('addExam', examData);
+
+            if (result && result.success) {
+                showToast('Imtixaan waa lagu kaydiyay guul ahaan!');
+                closeModal('examModal');
+                await loadAllData();
+                loadExamsTable();
+            }
+        }
+
+        async function deleteExam(id) {
+            if (!confirm('Ma hubtaa inaad tirtirto imtixaan-kan?')) return;
+
+            const result = await fetchFromSheet('deleteExam', { id });
+            if (result && result.success) {
+                showToast('Imtixaan waa la tirtiray!');
+                await loadAllData();
+                loadExamsTable();
+            }
+        }
+
+        function editExam(id) {
+            openExamModal(id);
+        }
+
+        // ============================================
+        // FEES MANAGEMENT
+        // ============================================
+
+        function loadFeesTable() {
+            const tbody = document.getElementById('feesTableBody');
+            
+            if (feesData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center">Bixin la ma helin</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = feesData.map(fee => {
+                const balance = fee.amount - fee.paid;
+                const status = balance <= 0 ? 'Dhamaystiran' : balance < fee.amount ? 'Qayb' : 'Weli';
+                const badgeClass = balance <= 0 ? 'badge-success' : balance < fee.amount ? 'badge-warning' : 'badge-danger';
+                
+                return `
+                <tr>
+                    <td>${fee.student}</td>
+                    <td>${fee.class}</td>
+                    <td>$${fee.amount}</td>
+                    <td>$${fee.paid}</td>
+                    <td>$${balance.toFixed(2)}</td>
+                    <td>${formatDate(fee.date)}</td>
+                    <td><span class="badge ${badgeClass}">${status}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-sm btn-primary" onclick="editFee('${fee.id}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteFee('${fee.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `}).join('');
+        }
+
+        function openFeeModal(feeId = null) {
+            const modal = document.getElementById('feeModal');
+            const form = document.getElementById('feeForm');
+            
+            if (feeId) {
+                const fee = feesData.find(f => f.id === feeId);
+                document.getElementById('feeStudent').value = fee.student;
+                document.getElementById('feeAmount').value = fee.amount;
+                document.getElementById('feePaid').value = fee.paid;
+                document.getElementById('feeDate').value = fee.date;
+                document.getElementById('feeNotes').value = fee.notes;
+            } else {
+                form.reset();
+            }
+            
+            modal.classList.add('active');
+        }
+
+        async function handleFeeSubmit(e) {
+            e.preventDefault();
+            
+            const feeData = {
+                id: generateId('FEE'),
+                student: document.getElementById('feeStudent').value,
+                class: studentsData.find(s => s.name === document.getElementById('feeStudent').value)?.class || '',
+                amount: document.getElementById('feeAmount').value,
+                paid: document.getElementById('feePaid').value,
+                date: document.getElementById('feeDate').value,
+                notes: document.getElementById('feeNotes').value
+            };
+
+            const result = await fetchFromSheet('addFee', feeData);
+
+            if (result && result.success) {
+                showToast('Bixin waa lagu kaydiyay guul ahaan!');
+                closeModal('feeModal');
+                await loadAllData();
+                loadFeesTable();
+            }
+        }
+
+        async function deleteFee(id) {
+            if (!confirm('Ma hubtaa inaad tirtirto bixin-kan?')) return;
+
+            const result = await fetchFromSheet('deleteFee', { id });
+            if (result && result.success) {
+                showToast('Bixin waa la tirtiray!');
+                await loadAllData();
+                loadFeesTable();
+            }
+        }
+
+        function editFee(id) {
+            openFeeModal(id);
+        }
+
+        // ============================================
+        // REPORTS
+        // ============================================
+
+        function generateStudentReport() {
+            showToast('Warbixinta ardayda waa la soo saari doonaa...');
+        }
+
+        function generateAttendanceReport() {
+            showToast('Warbixinta soo maridka waa la soo saari doonaa...');
+        }
+
+        function generateExamReport() {
+            showToast('Warbixinta imtixaannada waa la soo saari doonaa...');
+        }
+
+        function generateFeeReport() {
+            showToast('Warbixinta lacagaha waa la soo saari doonaa...');
+        }
+
+        // ============================================
+        // HELPER FUNCTIONS
+        // ============================================
+
+        function populateDropdowns() {
+            const classSelects = document.querySelectorAll('#studentClass, #examClass, #classFilter');
+            classSelects.forEach(select => {
+                const currentValue = select.value;
+                select.innerHTML = '<option value="">Dooro Fasal...</option>' +
+                    classesData.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+                select.value = currentValue;
+            });
+
+            const teacherSelect = document.getElementById('classTeacher');
+            if (teacherSelect) {
+                teacherSelect.innerHTML = '<option value="">Dooro Macallin...</option>' +
+                    teachersData.map(t => `<option value="${t.name}">${t.name}</option>`).join('');
+            }
+
+            const studentSelect = document.getElementById('feeStudent');
+            if (studentSelect) {
+                studentSelect.innerHTML = '<option value="">Dooro Arday...</option>' +
+                    studentsData.map(s => `<option value="${s.name}">${s.name} (${s.class})</option>`).join('');
+            }
+        }
+
+        function generateId(prefix) {
+            const timestamp = Date.now();
+            const random = Math.floor(Math.random() * 1000);
+            return `${prefix}${timestamp}${random}`;
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('so-SO');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.add('active');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('active');
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastMessage.textContent = message;
+            
+            if (type === 'error') {
+                toast.style.background = '#EF4444';
+            } else {
+                toast.style.background = '#10B981';
+            }
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
 </body>
 </html>
